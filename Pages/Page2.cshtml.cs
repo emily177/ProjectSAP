@@ -1,0 +1,104 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ProjectSAP.Services;
+using SAPbobsCOM;
+
+public class Page2Model : PageModel
+{
+    private readonly CompanyB_Service companyB_Service;
+    private readonly CompanyA_Service companyA_Service;
+    public bool? VerifySO { get; set; }
+    public bool? VerifySOfromPO { get; set; }
+    public bool? VerifyPO { get; set; }
+    public bool? Connection { get; set; }
+    public bool? ConnectionA { get; set; }
+
+
+    public Page2Model(CompanyB_Service compB, CompanyA_Service companyA_Service)
+    {
+        this.companyB_Service = compB;
+        this.companyA_Service = companyA_Service;
+    }
+
+
+    public void OnGet()
+    {
+
+
+        Connection = companyB_Service.ConnectToSAP_CompanyB();
+        //ConnectionA = companyA_Service.ConnectToSAP_Company1();
+        if (Connection == true)
+        {
+            Console.WriteLine("Connection to Company B successful.");
+            //companyB_Service.DeleteSO();
+            //VerifySO = companyB_Service.SalesOrder();
+            
+        }
+        else
+        {
+            Connection = false;
+            Console.WriteLine("Connection failed");
+        }
+       
+
+    }
+
+    public IActionResult OnPostSales()
+    {
+        Connection = companyB_Service.ConnectToSAP_CompanyB();
+        if (Connection == true)
+        {
+            Console.WriteLine("Connection to Company B in PostSales successful.");
+            VerifySO = companyB_Service.SalesOrder();
+        }
+        else
+        {
+            Connection = false;
+            Console.WriteLine("Connection failed in PostSales");
+        }
+        return Page(); 
+
+    }
+
+    public IActionResult OnPostPurchase()
+    {
+        Connection = companyB_Service.ConnectToSAP_CompanyB();
+        ConnectionA = companyA_Service.ConnectToSAP_Company1();
+        if (Connection == true && ConnectionA==true)
+        {
+            Console.WriteLine("Connection to Company A and Company B in PostPurchase successful.");
+            //int docEntry = companyA_Service.PurchaseOrder();
+            int docEntry = 3;
+
+            if (docEntry>0)
+            {
+                VerifyPO = true;
+                Console.WriteLine("Purchase Order created successfully in Company A.");
+
+                Documents po = (Documents)companyA_Service.GetCompany().GetBusinessObject(BoObjectTypes.oPurchaseOrders);
+                if (po.GetByKey(docEntry) == false)
+                {
+                    Console.WriteLine("Purchase Order not found with DocEntry: " + docEntry);
+                }
+                else 
+                {
+                    Console.WriteLine("Purchase Order found with DocEntry: " + docEntry);
+                    VerifySOfromPO = companyB_Service.SalesOrderBasedOnPO(po,docEntry);
+                }
+               
+
+            }
+            else
+            {
+                Console.WriteLine("Failed to create Purchase Order in Company A.");
+            }
+        }
+        else
+        {
+            Connection = false;
+            Console.WriteLine("Connection failed in PostPurchase");
+        }
+        return Page();
+
+    }
+}
