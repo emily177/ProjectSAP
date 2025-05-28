@@ -182,8 +182,24 @@ namespace ProjectSAP.Services
             }
             
         }
+        //Step 4.1
+        // Before making a Delivery, we need to have the items in stock => create a Goods Receipt in Company B
 
-        //Step 4
+        public void GoodsReceipt(int DocEntrySO)
+        {
+            Documents so = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
+            if (so.GetByKey(DocEntrySO) == false)
+            {
+                Console.WriteLine("Sales Order not found with DocEntry: " + DocEntrySO);
+                return;
+            }
+            Documents goodsReceipt = (Documents)company2.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
+
+
+        }
+
+        //Step 4.2
+        // We have the items in stock so we can deliver them to Company A (the buyer)
         public int Delivery(int DocEntrySO)
         {
             Documents salesOrder = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);

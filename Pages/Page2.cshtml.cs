@@ -10,6 +10,7 @@ public class Page2Model : PageModel
     public bool? VerifySO { get; set; }
     public bool? VerifySOfromPO { get; set; }
     public bool? VerifyPO { get; set; }
+    public bool? VerifyDelivery { get; set; }
     public bool? Connection { get; set; }
     public bool? ConnectionA { get; set; }
 
@@ -30,9 +31,19 @@ public class Page2Model : PageModel
         if (Connection == true)
         {
             Console.WriteLine("Connection to Company B successful.");
+            int docEntryDev = companyB_Service.Delivery(6);
+            if(docEntryDev >0)
+            {
+                VerifyDelivery = true;
+                Console.WriteLine("Delivery created successfully in Company B with DocEntry: " + docEntryDev);
+            }
+            else
+            {
+                Console.WriteLine("Failed to create Delivery in Company B.");
+            }
             //companyB_Service.DeleteSO();
             //VerifySO = companyB_Service.SalesOrder();
-            
+
         }
         else
         {

@@ -68,5 +68,13 @@ else
 {
     <p>Metoda inca nu a fost apelata. Te rog apasa butonul de "Create PurchaseOrder"</p>
 }
+@if(Model.VerifyDelivery==true)
+{
+    <p style="color:green">Delivery creat cu succes.</p>
+}
+else
+{
+    <p style="color:red">Nu s-a putut crea Delivery.</p>
+}
 
 
