@@ -123,9 +123,50 @@ namespace ProjectSAP.Services
         }
 
         //Step 5
-        public int GoodsReceiptPO()
+        public bool GoodsReceiptPO(int DocEntryPO)
         {
-            return 0;
+            Documents po = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
+            if (po.GetByKey(DocEntryPO) == false)
+            {
+                Console.WriteLine("Purchase Order not found with DocEntry: " + DocEntryPO);
+                return false;
+            }
+            else
+            {
+                Documents grpo = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
+                grpo.CardCode = po.CardCode;
+                grpo.DocDate = DateTime.Now;
+                grpo.DocDueDate = DateTime.Now.AddDays(5);
+                grpo.TaxDate = DateTime.Now;
+                grpo.Comments = "Goods Receipt for Purchase Order " + DocEntryPO;
+
+                for (int i = 0; i < po.Lines.Count; i++)
+                {
+                    po.Lines.SetCurrentLine(i);
+                    grpo.Lines.ItemCode = po.Lines.ItemCode;
+                    grpo.Lines.Quantity = po.Lines.Quantity;
+                    grpo.Lines.WarehouseCode = po.Lines.WarehouseCode;
+                    grpo.Lines.Price = po.Lines.Price;
+                    grpo.Lines.TaxCode = po.Lines.TaxCode;
+                    grpo.Lines.Add();
+                }
+                if (grpo.Add() != 0)
+                {
+                    string errorMessage;
+                    int errorCode;
+                    company1.GetLastError(out errorCode, out errorMessage);
+                    Console.WriteLine("Error adding Goods Receipt PO: " + errorCode + " - " + errorMessage);
+
+                    return false;
+                }
+                else
+                {
+                    Console.WriteLine("Goods Receipt PO added successfully.");
+                    return true;
+                }
+
+
+            }
         }
     }
     
