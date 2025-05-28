@@ -12,6 +12,8 @@ public class Page2Model : PageModel
     public bool? VerifyPO { get; set; }
     public bool? VerifyGrPO { get; set; }
     public bool? VerifyDelivery { get; set; }
+    public bool? VerifyARInv { get; set; }
+    public bool? VerifyAPInv { get; set; }
     public bool? Connection { get; set; }
     public bool? ConnectionA { get; set; }
 
@@ -32,7 +34,7 @@ public class Page2Model : PageModel
         {
             Console.WriteLine("Connection to Company B successful.");
             //int docEntryDev = companyB_Service.Delivery(6);
-            int docEntryDev = 6; 
+            int docEntryDev = 0; 
             if (docEntryDev >0)
             {
                 VerifyDelivery = true;
@@ -43,7 +45,8 @@ public class Page2Model : PageModel
                 Console.WriteLine("Failed to create Delivery in Company B.");
             }
 
-            VerifyGrPO = companyA_Service.GoodsReceiptPO(3);
+            //VerifyGrPO = companyA_Service.GoodsReceiptPO(3);
+            VerifyGrPO = false;
             if (VerifyGrPO == true)
             {
                 Console.WriteLine("Goods Receipt PO created successfully in Company A.");
@@ -54,6 +57,27 @@ public class Page2Model : PageModel
             }
             //companyB_Service.DeleteSO();
             //VerifySO = companyB_Service.SalesOrder();
+            //VerifyARInv = companyB_Service.ARInvoice(1);
+            //if (VerifyARInv == true)
+            //{
+            //    Console.WriteLine("AR Invoice created successfully in Company B.");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Failed to create AR Invoice in Company B.");
+            //}
+
+            //VerifyAPInv = companyA_Service.APInvoice(1);
+            VerifyAPInv = false; // Simulating the AP Invoice creation
+            if (VerifyAPInv == true)
+            {
+                Console.WriteLine("AP Invoice created successfully in Company A.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to create AP Invoice in Company A.");
+            }
+
 
         }
         else

@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\Images\background1.jpg" />
     <None Include="wwwroot\css\Index.css" />
   </ItemGroup>
 

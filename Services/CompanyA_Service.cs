@@ -168,6 +168,49 @@ namespace ProjectSAP.Services
 
             }
         }
+
+        // Step 8
+        public bool APInvoice(int DocEntryGRPO)
+        {
+            Documents grpo = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
+            if (grpo.GetByKey(DocEntryGRPO) == false)
+            {
+                Console.WriteLine("Delivery not found with DocEntry: " + DocEntryGRPO);
+                return false;
+            }
+
+            Documents apInvoice = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
+            apInvoice.CardCode = grpo.CardCode;
+            apInvoice.DocDate = DateTime.Now;
+            apInvoice.DocDueDate = grpo.DocDueDate;
+            apInvoice.TaxDate = grpo.TaxDate;
+
+            int lineCount = grpo.Lines.Count;
+            for (int i = 0; i < lineCount; i++)
+            {
+                grpo.Lines.SetCurrentLine(i);
+                apInvoice.Lines.ItemCode = grpo.Lines.ItemCode;
+                apInvoice.Lines.Quantity = grpo.Lines.Quantity;
+                apInvoice.Lines.ItemDescription = grpo.Lines.ItemDescription;
+                apInvoice.Lines.UnitPrice = grpo.Lines.UnitPrice;
+                apInvoice.Lines.Add();
+            }
+            int result = apInvoice.Add();
+            if (result != 0)
+            {
+                string errorMessage;
+                int errorCode;
+                company1.GetLastError(out errorCode, out errorMessage);
+                Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
+                return false;
+            }
+            else
+            {
+                string docEntry = company1.GetNewObjectKey();
+                Console.WriteLine("AR Invoice created with DocEntry: " + docEntry);
+                return true;
+            }
+        }
     }
     
 

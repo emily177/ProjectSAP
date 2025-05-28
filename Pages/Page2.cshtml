@@ -86,4 +86,22 @@ else
     <p style="color:red">Nu s-a putut crea Goods Receipt.</p>
 })
 
+@if (Model.VerifyARInv == true)
+{
+    <p style="color:green">AR Invoice creat cu succes.</p>
+}
+else
+{
+    <p style="color:red">Nu s-a putut crea AR Invoice.</p>
+}
+
+@if (Model.VerifyAPInv == true)
+{
+    <p style="color:green">AP Invoice creat cu succes.</p>
+}
+else
+{
+    <p style="color:red">Nu s-a putut crea AP Invoice.</p>
+}
+
 

@@ -182,24 +182,9 @@ namespace ProjectSAP.Services
             }
             
         }
-        //Step 4.1
-        // Before making a Delivery, we need to have the items in stock => create a Goods Receipt in Company B
-
-        public void GoodsReceipt(int DocEntrySO)
-        {
-            Documents so = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
-            if (so.GetByKey(DocEntrySO) == false)
-            {
-                Console.WriteLine("Sales Order not found with DocEntry: " + DocEntrySO);
-                return;
-            }
-            Documents goodsReceipt = (Documents)company2.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
 
 
-        }
-
-        //Step 4.2
-        // We have the items in stock so we can deliver them to Company A (the buyer)
+        //Step 4
         public int Delivery(int DocEntrySO)
         {
             Documents salesOrder = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
@@ -238,6 +223,49 @@ namespace ProjectSAP.Services
                 string docEntry = company2.GetNewObjectKey();
                 Console.WriteLine("Delivery created with DocEntry: " + docEntry);
                 return Convert.ToInt32(docEntry);
+            }
+        }
+
+        // Step 7
+        public bool ARInvoice(int DocEntryDelivery)
+        {
+            Documents delivery = (Documents)company2.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
+            if (delivery.GetByKey(DocEntryDelivery) == false)
+            {
+                Console.WriteLine("Delivery not found with DocEntry: " + DocEntryDelivery);
+                return false;
+            }
+
+            Documents arInvoice = (Documents)company2.GetBusinessObject(BoObjectTypes.oInvoices);
+            arInvoice.CardCode = delivery.CardCode;
+            arInvoice.DocDate = DateTime.Now;
+            arInvoice.DocDueDate = delivery.DocDueDate;
+            arInvoice.TaxDate = delivery.TaxDate;
+
+            int lineCount = delivery.Lines.Count;
+            for (int i = 0; i < lineCount; i++)
+            {
+                delivery.Lines.SetCurrentLine(i);
+                arInvoice.Lines.ItemCode = delivery.Lines.ItemCode;
+                arInvoice.Lines.Quantity = delivery.Lines.Quantity;
+                arInvoice.Lines.ItemDescription = delivery.Lines.ItemDescription;
+                arInvoice.Lines.UnitPrice = delivery.Lines.UnitPrice;
+                arInvoice.Lines.Add();
+            }
+            int result = arInvoice.Add();
+            if (result != 0)
+            {
+                string errorMessage;
+                int errorCode;
+                company2.GetLastError(out errorCode, out errorMessage);
+                Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
+                return false;
+            }
+            else
+            {
+                string docEntry = company2.GetNewObjectKey();
+                Console.WriteLine("AR Invoice created with DocEntry: " + docEntry);
+                return true;
             }
         }
 
