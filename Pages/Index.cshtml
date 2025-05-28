@@ -1,54 +1,25 @@
 ﻿@page
 @model IndexModel
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Produse SAP";
+}
+
 
 <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/Index.css">
+
+</head>
 <body>
-    <head>
-        <meta charset="utf-8" />
-        <title>@ViewData["Title"]</title>
-        <link rel="stylesheet" href="~/css/Index.css">
-        
-    </head>
+    <div class="container">
+        <a asp-page="/Page2" class="company-button">Compania A</a>
+        <a asp-page="/Page2" class="company-button">Compania B</a>
+    </div>
 
-    @{
-        ViewData["Title"] = "Produse SAP";
-    }
-
-
-    <a href="https://localhost:7178/Page2">Mergi la pagina 2</a>
-
-
-    <h3>Produse disponibile în SAP</h3>
-    <h4>Company 1</h4>
-
-    @if (Model.ItemNames1 != null && Model.ItemNames1.Any())
-    {
-        <ul>
-            @foreach (var item in Model.ItemNames1)
-            {
-                <li>@item</li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p>Nu s-au găsit produse sau conexiunea a eșuat.</p>
-    }
-
-    <h4>Company 2</h4>
-    @if (Model.ItemNames2 != null && Model.ItemNames2.Any())
-    {
-        <ul>
-            @foreach (var item in Model.ItemNames2)
-            {
-                <li>@item</li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p>Nu s-au găsit produse sau conexiunea a eșuat.</p>
-    }
 </body>
+</html>
 
