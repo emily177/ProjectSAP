@@ -1,5 +1,5 @@
 ﻿body {
-    background-image: url("Images/background1.png");
+    background-image: url("Images/background2.jpg");
     background-color:floralwhite;
     background-size: cover;
     background-position: center;
@@ -9,15 +9,16 @@
 }
 
 .cover {
-    background-color: #bc7c2c;
+    background-color: rgb(69,112,117);
+    opacity: 0.9;
     padding: 40px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 80vw;
-    height: 75vh;
+    width: 70vw;
+    height: 60vh;
     gap: 20px;
 }
 
@@ -27,18 +28,33 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    font-family: Arial, sans-serif;
-    color:aquamarine;
+    font-family: Bahnschrift;
+    color: black;
+}
+
+.button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+   
+}
+
+.welcome {
+    color: black;
+    text-align: center;
+    margin-right: 10vw;
+    margin-left: 10vw;
 }
 
 .company-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color:papayawhip;
+    background-color: rgba(254,251,216,255);
     color: black;
     text-decoration: none;
-    font-size: 1.5rem;
+    font-size: 2.5vh;
     font-weight: bold;
     width: 20vw;
     height: 30vh;
@@ -46,9 +62,11 @@
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     transition: transform 0.2s ease, background-color 0.2s ease;
     margin: 10px;
+    margin-bottom:20px
 }
 
     .company-button:hover {
-        background-color: wheat;
+        background-color: rgba(251,238,186,255);
         transform: scale(1.05);
+        opacity: 1;
     }
