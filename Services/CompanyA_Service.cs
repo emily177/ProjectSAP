@@ -35,14 +35,17 @@ namespace ProjectSAP.Services
             return connectionResult == 0;  // If the connection is successful, the result will be 0
         }
 
-        public List<string> GetItemNames1()
+        public List<string> GetItemNamesA()
         {
             var items = new List<string>();
 
             if (company1.Connected)
             {
                 Recordset recordset = (Recordset)company1.GetBusinessObject(BoObjectTypes.BoRecordset);
-                recordset.DoQuery("SELECT TOP 10 ItemName FROM OITM");
+                recordset.DoQuery("SELECT t0.ItemCode, t0.ItemName, t1.Price" +
+                    " from OITM t0 " +
+                    "join ITM1 t1 on t0.ItemCode=t1.ItemCode " +
+                    "where t1.PriceList = 2 and t0.CardCode = 500001");
 
                 while (!recordset.EoF)
                 {

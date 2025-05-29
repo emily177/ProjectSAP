@@ -1,2 +1,9 @@
 ﻿body {
+    
+    background-color: #ffffe3;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
 }
