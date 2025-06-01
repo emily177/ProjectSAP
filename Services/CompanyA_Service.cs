@@ -1,4 +1,5 @@
 ﻿using SAPbobsCOM;
+using ProjectSAP.Models;
 
 
 namespace ProjectSAP.Services
@@ -35,9 +36,9 @@ namespace ProjectSAP.Services
             return connectionResult == 0;  // If the connection is successful, the result will be 0
         }
 
-        public List<string> GetItemNamesA()
+        public List<ItemModel> GetItemNamesA()
         {
-            var items = new List<string>();
+            var items = new List<ItemModel>();
 
             if (company1.Connected)
             {
@@ -49,7 +50,12 @@ namespace ProjectSAP.Services
 
                 while (!recordset.EoF)
                 {
-                    items.Add(recordset.Fields.Item("ItemName").Value.ToString());
+                   items.Add(new ItemModel
+                   {
+                       ItemCode = recordset.Fields.Item("ItemCode").Value.ToString(),
+                       ItemName = recordset.Fields.Item("ItemName").Value.ToString(),
+                       Price = Convert.ToDouble(recordset.Fields.Item("Price").Value)
+                   });
                     recordset.MoveNext();
                 }
             }
@@ -59,7 +65,7 @@ namespace ProjectSAP.Services
 
         // Method to create a Purchase Order before a Sales Order
         // Step 1
-        public int PurchaseOrder()
+        public int PurchaseOrder(List<ItemModel> items)
         {
             if (company1.Connected)
             {
@@ -68,34 +74,38 @@ namespace ProjectSAP.Services
 
                 purchaseOrder.CardCode = "500001"; // Example CardCode
 
+                var itemCodes = string.Join(",", items.Select(i => $"'{i.ItemCode}'"));
+
                 SAPbobsCOM.Recordset oRecordSet = (SAPbobsCOM.Recordset)company1.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                oRecordSet.DoQuery("SELECT t0.ItemCode, t0.ItemName, t1.Price" +
-                    " from OITM t0 " +
-                    "join ITM1 t1 on t0.ItemCode=t1.ItemCode " +
-                    "where t1.PriceList = 2 and t0.ItemCode in ('102','103') "
+                oRecordSet.DoQuery($@"
+                        SELECT t0.ItemCode, t0.ItemName, t1.Price
+                        FROM OITM t0
+                        JOIN ITM1 t1 ON t0.ItemCode = t1.ItemCode
+                        WHERE t1.PriceList = 2 AND t0.ItemCode IN ({itemCodes})
+                    ");
 
-                    );
 
-                SAPbobsCOM.Recordset oRecordSet1 = (SAPbobsCOM.Recordset)company1.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                oRecordSet1.DoQuery("SELECT DISTINCT t1.DocEntry " +
-                    "from POR1 t0 join OPOR t1 on t0.DocEntry=t1.DocEntry " +
-                    "where t0.ItemCode in ('102','103') " +
-                    "and t1.Canceled = 'N'");
+                //SAPbobsCOM.Recordset oRecordSet1 = (SAPbobsCOM.Recordset)company1.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                //oRecordSet1.DoQuery($@"SELECT DISTINCT t1.DocEntry 
+                //    from POR1 t0 join OPOR t1 on t0.DocEntry=t1.DocEntry 
+                //    where t0.ItemCode in ({itemCodes}) 
+                //    and t1.Canceled = 'N'");
 
-                if (oRecordSet1.RecordCount > 0)
-                {
-                    Console.WriteLine("There is already a Purchase Order for the specified items.");
-                    return -1;
-                }
+                //if (oRecordSet1.RecordCount > 0)
+                //{
+                //    Console.WriteLine("There is already a Purchase Order for the specified items.");
+                //    return -1;
+                //}
 
                 bool first_line = true;
                 while (!oRecordSet.EoF)
                 {
+                    var item= items.FirstOrDefault(i => i.ItemCode == oRecordSet.Fields.Item("ItemCode").Value.ToString());
                     if (!first_line)
                         purchaseOrder.Lines.Add();
 
                     purchaseOrder.Lines.ItemCode = oRecordSet.Fields.Item("ItemCode").Value.ToString();
-                    purchaseOrder.Lines.Quantity = 3;
+                    purchaseOrder.Lines.Quantity = item.Quantity;
                     purchaseOrder.Lines.ItemDescription = oRecordSet.Fields.Item("ItemName").Value.ToString();
                     purchaseOrder.Lines.UnitPrice = oRecordSet.Fields.Item("Price").Value;
                     purchaseOrder.DocDueDate = DateTime.Now.AddDays(5);

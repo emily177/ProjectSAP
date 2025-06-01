@@ -14,6 +14,23 @@
 
    <p>You enter the simulation like the customer in the simulation.</p>
 
+   @foreach ( var item in Model.ItemNamesA)
+   {
+       <div class="item-box" id="box-@item.ItemCode">
+            <button onclick="selectItem('@item.ItemCode')">@item.ItemName</button>
+            <p>Price: @item.Price</p>
+
+            <div class="order" id="controls-@item.ItemCode" style="display:none">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="qty-@item.ItemCode" name="quantity" min="1" max="100" value="1">
+                <button onclick="orderItem('@item.ItemCode')">Add to Cart</button
+            </div>
+       </div>
+
+   }
+    <button onclick="submitOrder()">Create Purchase Order</button>
   
+
+   <script src="/js/CompanyA.js"></script>
 </body>
 </html>
