@@ -129,7 +129,7 @@ public class Page2Model : PageModel
                 else
                 {
                     Console.WriteLine("Purchase Order found with DocEntry: " + docEntry);
-                    VerifySOfromPO = companyB_Service.SalesOrderBasedOnPO(po, docEntry);
+                    //VerifySOfromPO = companyB_Service.SalesOrderBasedOnPO( docEntry);
                 }
 
 

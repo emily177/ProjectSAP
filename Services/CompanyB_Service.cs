@@ -39,7 +39,7 @@ namespace ProjectSAP.Services
             }
             else
             {
-                Console.WriteLine("Connection to Company 2 successful.");
+                //Console.WriteLine("Connection to Company 2 successful.");
                 return true;
             }
         }
@@ -137,15 +137,21 @@ namespace ProjectSAP.Services
         }
 
         //Step 2
-        public bool SalesOrderBasedOnPO(Documents purchaseOrder, int poDocEntry)
+        public int SalesOrderBasedOnPO( int poDocEntry)
         {
-            // Documents purchaseOrder = (Documents)companyA_Service.GetCompany().GetBusinessObject(BoObjectTypes.oPurchaseOrders);
+            companyA_Service.ConnectToSAP_Company1();
+            if (!companyA_Service.GetCompany().Connected)
+            {
+                Console.WriteLine("Failed to connect to Company A in SO.");
+                return -1;
+            }
+            Documents purchaseOrder = (Documents)companyA_Service.GetCompany().GetBusinessObject(BoObjectTypes.oPurchaseOrders);
 
-            //if (purchaseOrder.GetByKey(poDocEntry) == false)
-            //{
-            //    Console.WriteLine("Purchase Order not found with DocEntry: " + poDocEntry);
-            //    return false;
-            //}
+            if (purchaseOrder.GetByKey(poDocEntry) == false)
+            {
+                Console.WriteLine("Purchase Order not found with DocEntry: " + poDocEntry);
+                return -1;
+            }
             Documents salesOrder = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
 
             salesOrder.CardCode = "100001";
@@ -172,13 +178,13 @@ namespace ProjectSAP.Services
                 int errorCode;
                 company2.GetLastError(out errorCode, out errorMessage);
                 Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
-                return false;
+                return -1;
             }
             else
             {
                 string docEntry = company2.GetNewObjectKey();
                 Console.WriteLine("Sales Order created with DocEntry: " + docEntry);
-                return true;
+                return Convert.ToInt32(docEntry);
             }
 
         }
