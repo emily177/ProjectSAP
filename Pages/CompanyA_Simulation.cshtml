@@ -14,8 +14,10 @@
 
    <p>You enter the simulation like the customer in the simulation.</p>
 
-   @foreach ( var item in Model.ItemNamesA)
-   {
+  
+   
+        @foreach ( var item in Model.ItemNamesA)
+        {
        <div class="item-box" id="box-@item.ItemCode">
             <button onclick="selectItem('@item.ItemCode')">@item.ItemName</button>
             <p>Price: @item.Price</p>
@@ -23,12 +25,73 @@
             <div class="order" id="controls-@item.ItemCode" style="display:none">
                 <label for="quantity">Quantity:</label>
                 <input type="number" id="qty-@item.ItemCode" name="quantity" min="1" max="100" value="1">
-                <button onclick="orderItem('@item.ItemCode')">Add to Cart</button
+                <button onclick="orderItem('@item.ItemCode')">Add to Cart</button>
             </div>
        </div>
 
-   }
-    <button onclick="submitOrder()">Create Purchase Order</button>
+         }
+        <button onclick="submitOrder()" id="PO-button">Create Purchase Order</button>
+        
+        
+        @if(Model.ValidPO == true)
+        {
+            <p style="color:green"> ValidPO = true </p>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Ascunde toate item-box-urile
+                    let boxes = document.getElementsByClassName('item-box');
+                    for (let i = 0; i < boxes.length; i++) {
+                        boxes[i].style.display = 'none';
+                    }
+
+                    // Ascunde butonul de creare PO
+                    let poButton = document.getElementById('PO-button');
+                    if (poButton) {
+                        poButton.style.display = 'none';
+                    }
+                });
+            </script>
+
+             <div>
+           <h2>Purchase Order</h2>
+           <div>
+                <p><strong>Document Number:</strong> @Model.PurchaseOrder.DocNum</p>
+                <p><strong>Customer Code:</strong> @Model.PurchaseOrder.CardCode</p>
+                <p><strong>Customer Name:</strong> @Model.PurchaseOrder.CardName</p>
+                <p><strong>Document Date:</strong> @Model.PurchaseOrder.DocDate</p>
+                <p><strong>Due Date:</strong> @Model.PurchaseOrder.DocDueDate</p>
+           </div>
+           <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.PurchaseOrder.Items)
+                    {
+                        <tr>
+                            <td>@item.ItemCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+       </div>
+        }
+        else
+    {
+        <p style="color:red"> ValidPO = false </p>
+    }
+      
+   
+  
   
 
    <script src="/js/CompanyA.js"></script>

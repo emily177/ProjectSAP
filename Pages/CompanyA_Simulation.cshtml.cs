@@ -13,7 +13,10 @@ namespace ProjectSAP.Pages
         private readonly CompanyB_Service companyB_Service;
         private readonly CompanyA_Service companyA_Service;
         public bool? Connection { get; set; }
+        public bool ValidPO { get; set; } = false;
         public List<ItemModel> ItemNamesA { get; set; } = new List<ItemModel>();
+        public POmodel PurchaseOrder { get; set; } = new POmodel();
+
         public Dictionary<string, int> Items { get; set; }
 
         public CompanyA_SimulationModel(CompanyB_Service compB, CompanyA_Service companyA_Service)
@@ -57,8 +60,20 @@ namespace ProjectSAP.Pages
 
             Console.WriteLine(items.Count + " items received for purchase order.");
             
-            var result = companyA_Service.PurchaseOrder(items);
-           // var result = 1;
+            //var result = companyA_Service.PurchaseOrder(items);
+            var result = 3;
+
+            if(result != -1)
+            {
+                ValidPO = true;
+                PurchaseOrder = companyA_Service.DiplayPO(result);
+                Console.WriteLine("Purchase order created successfully.");
+            }
+            else
+            {
+                ValidPO = false;
+                Console.WriteLine("Failed to create purchase order.");
+            }
 
             return new JsonResult(new { success = result != -1 });
         }

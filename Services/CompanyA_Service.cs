@@ -63,6 +63,45 @@ namespace ProjectSAP.Services
             return items;
         }
 
+        // For displaying the purchase order that was made
+        public POmodel DiplayPO(int DocNum)
+        {
+            POmodel poModel = new POmodel();
+            if (company1.Connected)
+            {
+                Documents purchaseOrder = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
+                if (purchaseOrder.GetByKey(DocNum))
+                {
+                    poModel.DocNum = purchaseOrder.DocNum.ToString();
+                    poModel.CardCode = purchaseOrder.CardCode;
+                    poModel.CardName = purchaseOrder.CardName;
+                    poModel.DocDate = purchaseOrder.DocDate.ToString("yyyy-MM-dd");
+                    poModel.DocDueDate = purchaseOrder.DocDueDate.ToString("yyyy-MM-dd");
+                    for (int i = 0; i < purchaseOrder.Lines.Count; i++)
+                    {
+                        purchaseOrder.Lines.SetCurrentLine(i);
+                        ItemModel item = new ItemModel
+                        {
+                            ItemCode = purchaseOrder.Lines.ItemCode,
+                            ItemName = purchaseOrder.Lines.ItemDescription,
+                            Price = purchaseOrder.Lines.UnitPrice,
+                            Quantity = purchaseOrder.Lines.Quantity
+                        };
+                        poModel.Items.Add(item);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Purchase Order not found with DocNum: " + DocNum);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not connected to SAP Business One.");
+            }
+            return poModel;
+        }
+
         // Method to create a Purchase Order before a Sales Order
         // Step 1
         public int PurchaseOrder(List<ItemModel> items)

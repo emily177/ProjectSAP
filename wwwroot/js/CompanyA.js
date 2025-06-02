@@ -39,7 +39,7 @@ function submitOrder() {
             try {
                 const data = JSON.parse(text);
                 if (data.success) {
-                    alert("Order submitted successfully!");
+                    alert("Order submitted successfully! Bravooo!");
                 } else {
                     alert("Error submitting order.");
                 }
