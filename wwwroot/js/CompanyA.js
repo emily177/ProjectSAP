@@ -39,7 +39,8 @@ function submitOrder() {
             try {
                 const data = JSON.parse(text);
                 if (data.success) {
-                    alert("Order submitted successfully! Bravooo!");
+                    console.log("Order submitted successfully:", data);
+                    window.location.href = '/CompanyA_Simulation';
                 } else {
                     alert("Error submitting order.");
                 }

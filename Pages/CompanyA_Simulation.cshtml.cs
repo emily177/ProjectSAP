@@ -38,6 +38,13 @@ namespace ProjectSAP.Pages
                 Console.WriteLine("Failed to connect to Company A.");
             }
             ItemNamesA = companyA_Service.GetItemNamesA();
+
+            if(TempData["ValidPO"] != null && TempData["ValidPO"].ToString()=="True")
+            {
+                ValidPO = true;
+                int result = Convert.ToInt32(TempData["DocNum"]);
+                PurchaseOrder = companyA_Service.DiplayPO(result);
+            }
         }
 
        
@@ -65,8 +72,8 @@ namespace ProjectSAP.Pages
 
             if(result != -1)
             {
-                ValidPO = true;
-                PurchaseOrder = companyA_Service.DiplayPO(result);
+                TempData["ValidPO"] = true;
+                TempData["DocNum"] = result.ToString();
                 Console.WriteLine("Purchase order created successfully.");
             }
             else
@@ -75,7 +82,8 @@ namespace ProjectSAP.Pages
                 Console.WriteLine("Failed to create purchase order.");
             }
 
-            return new JsonResult(new { success = result != -1 });
+           return new JsonResult(new { success = result != -1 });
+           //return RedirectToPage("/CompanyA_Simulation", new { success = result != -1, validPO = ValidPO, purchaseOrder = PurchaseOrder });
         }
     }
     }
