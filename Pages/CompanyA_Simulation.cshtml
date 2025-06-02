@@ -14,8 +14,6 @@
 
    <p>You enter the simulation like the customer.</p>
 
-  
-   
         @foreach ( var item in Model.ItemNamesA)
         {
        <div class="item-box" id="box-@item.ItemCode">
@@ -94,6 +92,41 @@
         </div>
     </div>
        
+    @if(Model.SalesOrder != null)
+    {
+        <div class="sales-order-panel">
+            <h2>Sales Order</h2>
+            <div>
+                <p><strong>Document Number:</strong> @Model.SalesOrder.DocNum</p>
+                <p><strong>Customer Code:</strong> @Model.SalesOrder.CardCode</p>
+                <p><strong>Customer Name:</strong> @Model.SalesOrder.CardName</p>
+                <p><strong>Document Date:</strong> @Model.SalesOrder.DocDate</p>
+                <p><strong>Due Date:</strong> @Model.SalesOrder.DocDueDate</p>
+            </div>
+            <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SalesOrder.Items)
+                    {
+                        <tr>
+                            <td>@item.ItemCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
       
    
   

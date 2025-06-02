@@ -1,5 +1,6 @@
 ﻿using SAPbobsCOM;
 using ProjectSAP.Services;
+using ProjectSAP.Models;
 
 namespace ProjectSAP.Services
 {
@@ -62,6 +63,45 @@ namespace ProjectSAP.Services
             }
 
             return items;
+        }
+
+        public SOmodel DisplaySO(int DocEntry)
+        {
+            SOmodel soModel = new SOmodel();
+            if (!company2.Connected)
+            {
+                Console.WriteLine("Company B is not connected.");
+                return soModel;
+            }
+            Documents salesOrder = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
+            if (salesOrder.GetByKey(DocEntry))
+            {
+                soModel.CardCode = salesOrder.CardCode;
+                soModel.CardName = salesOrder.CardName;
+                soModel.DocNum = salesOrder.DocNum.ToString();
+                soModel.DocDate = salesOrder.DocDate.ToString("yyyy-MM-dd");
+                soModel.DocDueDate = salesOrder.DocDueDate.ToString("yyyy-MM-dd");
+                soModel.DocTotal = salesOrder.DocTotal.ToString();
+                soModel.DocStatus = salesOrder.DocumentStatus.ToString();
+                for (int i = 0; i < salesOrder.Lines.Count; i++)
+                {
+                    salesOrder.Lines.SetCurrentLine(i);
+                    ItemModel item = new ItemModel
+                    {
+                        ItemCode = salesOrder.Lines.ItemCode,
+                        ItemName = salesOrder.Lines.ItemDescription,
+                        Quantity = salesOrder.Lines.Quantity,
+                        Price = salesOrder.Lines.UnitPrice
+                    };
+                    soModel.Items.Add(item);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Sales Order not found with DocEntry: " + DocEntry);
+            }
+            return soModel;
+
         }
 
         //Compania B (vanzatorul) creeaza un SalesOrder

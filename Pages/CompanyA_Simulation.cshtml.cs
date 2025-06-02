@@ -17,6 +17,7 @@ namespace ProjectSAP.Pages
         public bool ValidPO { get; set; } = false;
         public List<ItemModel> ItemNamesA { get; set; } = new List<ItemModel>();
         public POmodel PurchaseOrder { get; set; } = new POmodel();
+        public SOmodel SalesOrder { get; set; } 
 
         public Dictionary<string, int> Items { get; set; }
 
@@ -38,11 +39,17 @@ namespace ProjectSAP.Pages
             }
             ItemNamesA = companyA_Service.GetItemNamesA();
 
-            if(TempData["ValidPO"] != null && TempData["ValidPO"].ToString()=="True")
+            if(TempData["ValidPO"] != null && TempData.Peek("ValidPO").ToString()=="True")
             {
+                TempData.Keep();
                 ValidPO = true;
                 int result = Convert.ToInt32(TempData.Peek("DocNum"));
                 PurchaseOrder = companyA_Service.DiplayPO(result);
+            }
+            if (TempData["SalesOrderNum"] != null)
+            {
+                int soNum = Convert.ToInt32(TempData.Peek("SalesOrderNum"));
+                SalesOrder = companyB_Service.DisplaySO(soNum);
             }
         }
 
@@ -149,7 +156,11 @@ namespace ProjectSAP.Pages
 
             int docNum = int.Parse(TempData["DocNum"].ToString());
 
-            var result = companyB_Service.SalesOrderBasedOnPO(docNum);
+            //var result = companyB_Service.SalesOrderBasedOnPO(docNum);
+            var result = 8; // Simulating a successful SO creation for testing purposes
+            
+            TempData["SalesOrderNum"] = result;
+            TempData.Keep(); 
 
             if (result == -1)
                 return new JsonResult(new { success = false, message = "Failed to create SO." });

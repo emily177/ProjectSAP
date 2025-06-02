@@ -64,13 +64,13 @@ namespace ProjectSAP.Services
         }
 
         // For displaying the purchase order that was made
-        public POmodel DiplayPO(int DocNum)
+        public POmodel DiplayPO(int DocEntry)
         {
             POmodel poModel = new POmodel();
             if (company1.Connected)
             {
                 Documents purchaseOrder = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
-                if (purchaseOrder.GetByKey(DocNum))
+                if (purchaseOrder.GetByKey(DocEntry))
                 {
                     poModel.DocNum = purchaseOrder.DocNum.ToString();
                     poModel.CardCode = purchaseOrder.CardCode;
@@ -92,7 +92,7 @@ namespace ProjectSAP.Services
                 }
                 else
                 {
-                    Console.WriteLine("Purchase Order not found with DocNum: " + DocNum);
+                    Console.WriteLine("Purchase Order not found with DocNum: " + DocEntry);
                 }
             }
             else
