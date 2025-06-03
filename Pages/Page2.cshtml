@@ -15,7 +15,7 @@
     <button type="submit">Create SalesOrder</button>
 </form>
 
-@if(Model.VerifySO != null)
+@if (Model.VerifySO != null)
 {
     @if (Model.VerifySO == false)
     {
@@ -29,7 +29,7 @@
 else
 {
     <p>Metoda inca nu a fost apelata. Te rog apasa butonul</p>
-} 
+}
 
 <form asp-page-handler="Purchase" method="post">
     @Html.AntiForgeryToken()
@@ -67,6 +67,41 @@ else
 else
 {
     <p>Metoda inca nu a fost apelata. Te rog apasa butonul de "Create PurchaseOrder"</p>
+}
+@if (Model.VerifyDelivery == true)
+{
+    <p style="color:green">Delivery creat cu succes.</p>
+}
+else
+{
+    <p style="color:red">Nu s-a putut crea Delivery.</p>
+}
+
+@if (Model.VerifyGrPO == true)
+{
+    <p style="color:green">Goods Receipt creat cu succes.</p>
+}
+else
+{
+    <p style="color:red">Nu s-a putut crea Goods Receipt.</p>
+})
+
+@if (Model.VerifyARInv == true)
+{
+    <p style="color:green">AR Invoice creat cu succes.</p>
+}
+else
+{
+    <p style="color:red">Nu s-a putut crea AR Invoice.</p>
+}
+
+@if (Model.VerifyAPInv == true)
+{
+    <p style="color:green">AP Invoice creat cu succes.</p>
+}
+else
+{
+    <p style="color:red">Nu s-a putut crea AP Invoice.</p>
 }
 
 

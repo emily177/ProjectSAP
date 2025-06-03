@@ -1,5 +1,7 @@
 ﻿using SAPbobsCOM;
 using ProjectSAP.Services;
+using ProjectSAP.Models;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ProjectSAP.Services
 {
@@ -17,7 +19,7 @@ namespace ProjectSAP.Services
             companyA_Service = new CompanyA_Service();
         }
 
-        
+
         //Company 2
         public bool ConnectToSAP_CompanyB()
         {
@@ -39,7 +41,7 @@ namespace ProjectSAP.Services
             }
             else
             {
-                Console.WriteLine("Connection to Company 2 successful.");
+                //Console.WriteLine("Connection to Company 2 successful.");
                 return true;
             }
         }
@@ -63,7 +65,131 @@ namespace ProjectSAP.Services
 
             return items;
         }
-       
+
+        public SOmodel DisplaySO(int DocEntry)
+        {
+            SOmodel soModel = new SOmodel();
+            if (!company2.Connected)
+            {
+                Console.WriteLine("Company B is not connected.");
+                return soModel;
+            }
+            Documents salesOrder = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
+            if (salesOrder.GetByKey(DocEntry))
+            {
+                soModel.CardCode = salesOrder.CardCode;
+                soModel.CardName = salesOrder.CardName;
+                soModel.DocNum = salesOrder.DocNum.ToString();
+                soModel.DocDate = salesOrder.DocDate.ToString("yyyy-MM-dd");
+                soModel.DocDueDate = salesOrder.DocDueDate.ToString("yyyy-MM-dd");
+                soModel.DocTotal = salesOrder.DocTotal.ToString();
+                soModel.DocStatus = salesOrder.DocumentStatus.ToString();
+                for (int i = 0; i < salesOrder.Lines.Count; i++)
+                {
+                    salesOrder.Lines.SetCurrentLine(i);
+                    ItemModel item = new ItemModel
+                    {
+                        ItemCode = salesOrder.Lines.ItemCode,
+                        ItemName = salesOrder.Lines.ItemDescription,
+                        Quantity = salesOrder.Lines.Quantity,
+                        Price = salesOrder.Lines.UnitPrice
+                        
+                    };
+                    soModel.Items.Add(item);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Sales Order not found with DocEntry: " + DocEntry);
+            }
+            return soModel;
+
+        }
+        // Display Delivery Note based on DocEntry
+        public DeliveryModel DisplayDelivery(int DocEntry)
+        {
+            DeliveryModel deliveryModel = new DeliveryModel();
+
+            if (!company2.Connected)
+            {
+                Console.WriteLine("Company B is not connected.");
+                return deliveryModel;
+            }
+            Documents delivery = (Documents)company2.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
+            if (delivery.GetByKey(DocEntry))
+            {
+                deliveryModel.CardCode = delivery.CardCode;
+                deliveryModel.CardName = delivery.CardName;
+                deliveryModel.DocNum = delivery.DocNum.ToString();
+                deliveryModel.DocDate = delivery.DocDate.ToString("yyyy-MM-dd");
+                deliveryModel.DocDueDate = delivery.DocDueDate.ToString("yyyy-MM-dd");
+                deliveryModel.DocTotal = delivery.DocTotal.ToString();
+                deliveryModel.DocStatus = delivery.DocumentStatus.ToString();
+                for (int i = 0; i < delivery.Lines.Count; i++)
+                {
+                    delivery.Lines.SetCurrentLine(i);
+                    ItemModel item = new ItemModel
+                    {
+                        ItemCode = delivery.Lines.ItemCode,
+                        ItemName = delivery.Lines.ItemDescription,
+                        Quantity = delivery.Lines.Quantity,
+                        Price = delivery.Lines.UnitPrice
+                    };
+                    deliveryModel.Items.Add(item);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Delivery Note not found with DocEntry: " + DocEntry);
+            }
+            return deliveryModel;
+
+        }
+        // Display AR Invoice based on DocEntry
+
+        public InvoiceModel DisplayARInv(int DocEntry)
+        {
+
+            InvoiceModel ARInv = new InvoiceModel();
+            if (!company2.Connected)
+            {
+                Console.WriteLine("Company B is not connected.");
+                return ARInv;
+            }
+
+            Documents arInvoice = (Documents)company2.GetBusinessObject(BoObjectTypes.oInvoices);
+
+            if (arInvoice.GetByKey(DocEntry))
+            {
+                ARInv.CardCode = arInvoice.CardCode;
+                ARInv.CardName = arInvoice.CardName;
+                ARInv.DocNum = arInvoice.DocNum.ToString();
+                ARInv.DocDate = arInvoice.DocDate.ToString("yyyy-MM-dd");
+                ARInv.DocDueDate = arInvoice.DocDueDate.ToString("yyyy-MM-dd");
+                ARInv.DocTotal = arInvoice.DocTotal.ToString();
+                
+                for (int i = 0; i < arInvoice.Lines.Count; i++)
+                {
+                    arInvoice.Lines.SetCurrentLine(i);
+                    ItemModel item = new ItemModel
+                    {
+                        ItemCode = arInvoice.Lines.ItemCode,
+                        ItemName = arInvoice.Lines.ItemDescription,
+                        Quantity = arInvoice.Lines.Quantity,
+                        Price = arInvoice.Lines.UnitPrice
+                    };
+                    ARInv.Items.Add(item);
+                }
+            }
+            else
+            {
+                Console.WriteLine("AR Invoice not found with DocEntry: " + DocEntry);
+            }
+
+
+            return ARInv;
+        }
+
         //Compania B (vanzatorul) creeaza un SalesOrder
         public bool SalesOrder()
         {
@@ -93,7 +219,7 @@ namespace ProjectSAP.Services
                 "where t1.PriceList = 2 and t0.ItemCode in ('102','103')");
 
 
-           
+
             //Datele pentru Sales Order
             if (oRecordSet.RecordCount == 0)
             {
@@ -111,8 +237,8 @@ namespace ProjectSAP.Services
                 salesOrder.Lines.Quantity = 3;
                 salesOrder.Lines.ItemDescription = oRecordSet.Fields.Item("ItemName").Value.ToString();
                 salesOrder.Lines.UnitPrice = oRecordSet.Fields.Item("Price").Value;
-                salesOrder.DocDueDate = DateTime.Now.AddDays(5); 
-                
+                salesOrder.DocDueDate = DateTime.Now.AddDays(5);
+
                 first_line = false;
                 oRecordSet.MoveNext();
             }
@@ -137,18 +263,24 @@ namespace ProjectSAP.Services
         }
 
         //Step 2
-        public bool SalesOrderBasedOnPO(Documents purchaseOrder, int poDocEntry)
+        public int SalesOrderBasedOnPO( int poDocEntry)
         {
-           // Documents purchaseOrder = (Documents)companyA_Service.GetCompany().GetBusinessObject(BoObjectTypes.oPurchaseOrders);
+            companyA_Service.ConnectToSAP_Company1();
+            if (!companyA_Service.GetCompany().Connected)
+            {
+                Console.WriteLine("Failed to connect to Company A in SO.");
+                return -1;
+            }
+            Documents purchaseOrder = (Documents)companyA_Service.GetCompany().GetBusinessObject(BoObjectTypes.oPurchaseOrders);
 
-            //if (purchaseOrder.GetByKey(poDocEntry) == false)
-            //{
-            //    Console.WriteLine("Purchase Order not found with DocEntry: " + poDocEntry);
-            //    return false;
-            //}
+            if (purchaseOrder.GetByKey(poDocEntry) == false)
+            {
+                Console.WriteLine("Purchase Order not found with DocEntry: " + poDocEntry);
+                return -1;
+            }
             Documents salesOrder = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
 
-            salesOrder.CardCode = "100001"; 
+            salesOrder.CardCode = "100001";
             salesOrder.DocDate = DateTime.Now;
             salesOrder.DocDueDate = purchaseOrder.DocDueDate;
             salesOrder.TaxDate = purchaseOrder.TaxDate;
@@ -161,9 +293,9 @@ namespace ProjectSAP.Services
                 salesOrder.Lines.Quantity = purchaseOrder.Lines.Quantity;
                 salesOrder.Lines.ItemDescription = purchaseOrder.Lines.ItemDescription;
                 salesOrder.Lines.UnitPrice = purchaseOrder.Lines.UnitPrice;
-               
+
                 salesOrder.Lines.Add();
-                
+
             }
             int result = salesOrder.Add();
             if (result != 0)
@@ -172,16 +304,17 @@ namespace ProjectSAP.Services
                 int errorCode;
                 company2.GetLastError(out errorCode, out errorMessage);
                 Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
-                return false;
+                return -1;
             }
             else
             {
                 string docEntry = company2.GetNewObjectKey();
                 Console.WriteLine("Sales Order created with DocEntry: " + docEntry);
-                return true;
+                return Convert.ToInt32(docEntry);
             }
-            
+
         }
+
 
         //Step 4
         public int Delivery(int DocEntrySO)
@@ -221,6 +354,49 @@ namespace ProjectSAP.Services
             {
                 string docEntry = company2.GetNewObjectKey();
                 Console.WriteLine("Delivery created with DocEntry: " + docEntry);
+                return Convert.ToInt32(docEntry);
+            }
+        }
+
+        // Step 7
+        public int ARInvoice(int DocEntryDelivery)
+        {
+            Documents delivery = (Documents)company2.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
+            if (delivery.GetByKey(DocEntryDelivery) == false)
+            {
+                Console.WriteLine("Delivery not found with DocEntry: " + DocEntryDelivery);
+                return -1;
+            }
+
+            Documents arInvoice = (Documents)company2.GetBusinessObject(BoObjectTypes.oInvoices);
+            arInvoice.CardCode = delivery.CardCode;
+            arInvoice.DocDate = DateTime.Now;
+            arInvoice.DocDueDate = delivery.DocDueDate;
+            arInvoice.TaxDate = delivery.TaxDate;
+
+            int lineCount = delivery.Lines.Count;
+            for (int i = 0; i < lineCount; i++)
+            {
+                delivery.Lines.SetCurrentLine(i);
+                arInvoice.Lines.ItemCode = delivery.Lines.ItemCode;
+                arInvoice.Lines.Quantity = delivery.Lines.Quantity;
+                arInvoice.Lines.ItemDescription = delivery.Lines.ItemDescription;
+                arInvoice.Lines.UnitPrice = delivery.Lines.UnitPrice;
+                arInvoice.Lines.Add();
+            }
+            int result = arInvoice.Add();
+            if (result != 0)
+            {
+                string errorMessage;
+                int errorCode;
+                company2.GetLastError(out errorCode, out errorMessage);
+                Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
+                return -1;
+            }
+            else
+            {
+                string docEntry = company2.GetNewObjectKey();
+                Console.WriteLine("AR Invoice created with DocEntry: " + docEntry);
                 return Convert.ToInt32(docEntry);
             }
         }

@@ -10,6 +10,10 @@ public class Page2Model : PageModel
     public bool? VerifySO { get; set; }
     public bool? VerifySOfromPO { get; set; }
     public bool? VerifyPO { get; set; }
+    public bool? VerifyGrPO { get; set; }
+    public bool? VerifyDelivery { get; set; }
+    public bool? VerifyARInv { get; set; }
+    public bool? VerifyAPInv { get; set; }
     public bool? Connection { get; set; }
     public bool? ConnectionA { get; set; }
 
@@ -24,22 +28,64 @@ public class Page2Model : PageModel
     public void OnGet()
     {
 
-
         Connection = companyB_Service.ConnectToSAP_CompanyB();
-        //ConnectionA = companyA_Service.ConnectToSAP_Company1();
-        if (Connection == true)
+        ConnectionA = companyA_Service.ConnectToSAP_Company1();
+        if (Connection == true && ConnectionA == true)
         {
             Console.WriteLine("Connection to Company B successful.");
+            //int docEntryDev = companyB_Service.Delivery(6);
+            int docEntryDev = 0;
+            if (docEntryDev > 0)
+            {
+                VerifyDelivery = true;
+                Console.WriteLine("Delivery created successfully in Company B with DocEntry: " + docEntryDev);
+            }
+            else
+            {
+                Console.WriteLine("Failed to create Delivery in Company B.");
+            }
+
+            //VerifyGrPO = companyA_Service.GoodsReceiptPO(3);
+            VerifyGrPO = false;
+            if (VerifyGrPO == true)
+            {
+                Console.WriteLine("Goods Receipt PO created successfully in Company A.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to create Goods Receipt PO in Company A.");
+            }
             //companyB_Service.DeleteSO();
             //VerifySO = companyB_Service.SalesOrder();
-            
+            //VerifyARInv = companyB_Service.ARInvoice(1);
+            //if (VerifyARInv == true)
+            //{
+            //    Console.WriteLine("AR Invoice created successfully in Company B.");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Failed to create AR Invoice in Company B.");
+            //}
+
+            //VerifyAPInv = companyA_Service.APInvoice(1);
+            VerifyAPInv = false; // Simulating the AP Invoice creation
+            if (VerifyAPInv == true)
+            {
+                Console.WriteLine("AP Invoice created successfully in Company A.");
+            }
+            else
+            {
+                Console.WriteLine("Failed to create AP Invoice in Company A.");
+            }
+
+
         }
         else
         {
             Connection = false;
             Console.WriteLine("Connection failed");
         }
-       
+
 
     }
 
@@ -56,7 +102,7 @@ public class Page2Model : PageModel
             Connection = false;
             Console.WriteLine("Connection failed in PostSales");
         }
-        return Page(); 
+        return Page();
 
     }
 
@@ -64,13 +110,13 @@ public class Page2Model : PageModel
     {
         Connection = companyB_Service.ConnectToSAP_CompanyB();
         ConnectionA = companyA_Service.ConnectToSAP_Company1();
-        if (Connection == true && ConnectionA==true)
+        if (Connection == true && ConnectionA == true)
         {
             Console.WriteLine("Connection to Company A and Company B in PostPurchase successful.");
             //int docEntry = companyA_Service.PurchaseOrder();
             int docEntry = 3;
 
-            if (docEntry>0)
+            if (docEntry > 0)
             {
                 VerifyPO = true;
                 Console.WriteLine("Purchase Order created successfully in Company A.");
@@ -80,12 +126,12 @@ public class Page2Model : PageModel
                 {
                     Console.WriteLine("Purchase Order not found with DocEntry: " + docEntry);
                 }
-                else 
+                else
                 {
                     Console.WriteLine("Purchase Order found with DocEntry: " + docEntry);
-                    VerifySOfromPO = companyB_Service.SalesOrderBasedOnPO(po,docEntry);
+                    //VerifySOfromPO = companyB_Service.SalesOrderBasedOnPO( docEntry);
                 }
-               
+
 
             }
             else
