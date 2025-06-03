@@ -142,6 +142,44 @@ namespace ProjectSAP.Services
             return grpo;
         }
 
+        public InvoiceModel DisplayAPInv(int DocEntry)
+        {
+            InvoiceModel invoice = new InvoiceModel();
+            if (company1.Connected)
+            {
+                Documents apInvoice = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
+                if (apInvoice.GetByKey(DocEntry))
+                {
+                    invoice.DocNum = apInvoice.DocNum.ToString();
+                    invoice.CardCode = apInvoice.CardCode;
+                    invoice.CardName = apInvoice.CardName;
+                    invoice.DocDate = apInvoice.DocDate.ToString("yyyy-MM-dd");
+                    invoice.DocDueDate = apInvoice.DocDueDate.ToString("yyyy-MM-dd");
+                    for (int i = 0; i < apInvoice.Lines.Count; i++)
+                    {
+                        apInvoice.Lines.SetCurrentLine(i);
+                        ItemModel item = new ItemModel
+                        {
+                            ItemCode = apInvoice.Lines.ItemCode,
+                            ItemName = apInvoice.Lines.ItemDescription,
+                            Price = apInvoice.Lines.UnitPrice,
+                            Quantity = apInvoice.Lines.Quantity
+                        };
+                        invoice.Items.Add(item);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("AP Invoice not found with DocNum: " + DocEntry);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not connected to SAP Business One.");
+            }
+            return invoice;
+        }
+
         // Method to create a Purchase Order before a Sales Order
         // Step 1
         public int PurchaseOrder(List<ItemModel> items)

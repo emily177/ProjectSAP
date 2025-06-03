@@ -1,6 +1,7 @@
 ﻿using SAPbobsCOM;
 using ProjectSAP.Services;
 using ProjectSAP.Models;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ProjectSAP.Services
 {
@@ -143,6 +144,50 @@ namespace ProjectSAP.Services
             }
             return deliveryModel;
 
+        }
+        // Display AR Invoice based on DocEntry
+
+        public InvoiceModel DisplayARInv(int DocEntry)
+        {
+
+            InvoiceModel ARInv = new InvoiceModel();
+            if (!company2.Connected)
+            {
+                Console.WriteLine("Company B is not connected.");
+                return ARInv;
+            }
+
+            Documents arInvoice = (Documents)company2.GetBusinessObject(BoObjectTypes.oInvoices);
+
+            if (arInvoice.GetByKey(DocEntry))
+            {
+                ARInv.CardCode = arInvoice.CardCode;
+                ARInv.CardName = arInvoice.CardName;
+                ARInv.DocNum = arInvoice.DocNum.ToString();
+                ARInv.DocDate = arInvoice.DocDate.ToString("yyyy-MM-dd");
+                ARInv.DocDueDate = arInvoice.DocDueDate.ToString("yyyy-MM-dd");
+                ARInv.DocTotal = arInvoice.DocTotal.ToString();
+                
+                for (int i = 0; i < arInvoice.Lines.Count; i++)
+                {
+                    arInvoice.Lines.SetCurrentLine(i);
+                    ItemModel item = new ItemModel
+                    {
+                        ItemCode = arInvoice.Lines.ItemCode,
+                        ItemName = arInvoice.Lines.ItemDescription,
+                        Quantity = arInvoice.Lines.Quantity,
+                        Price = arInvoice.Lines.UnitPrice
+                    };
+                    ARInv.Items.Add(item);
+                }
+            }
+            else
+            {
+                Console.WriteLine("AR Invoice not found with DocEntry: " + DocEntry);
+            }
+
+
+            return ARInv;
         }
 
         //Compania B (vanzatorul) creeaza un SalesOrder
@@ -314,13 +359,13 @@ namespace ProjectSAP.Services
         }
 
         // Step 7
-        public bool ARInvoice(int DocEntryDelivery)
+        public int ARInvoice(int DocEntryDelivery)
         {
             Documents delivery = (Documents)company2.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
             if (delivery.GetByKey(DocEntryDelivery) == false)
             {
                 Console.WriteLine("Delivery not found with DocEntry: " + DocEntryDelivery);
-                return false;
+                return -1;
             }
 
             Documents arInvoice = (Documents)company2.GetBusinessObject(BoObjectTypes.oInvoices);
@@ -346,13 +391,13 @@ namespace ProjectSAP.Services
                 int errorCode;
                 company2.GetLastError(out errorCode, out errorMessage);
                 Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
-                return false;
+                return -1;
             }
             else
             {
                 string docEntry = company2.GetNewObjectKey();
                 Console.WriteLine("AR Invoice created with DocEntry: " + docEntry);
-                return true;
+                return Convert.ToInt32(docEntry);
             }
         }
 
