@@ -17,7 +17,8 @@ namespace ProjectSAP.Pages
         public bool ValidPO { get; set; } = false;
         public List<ItemModel> ItemNamesA { get; set; } = new List<ItemModel>();
         public POmodel PurchaseOrder { get; set; } = new POmodel();
-        public SOmodel SalesOrder { get; set; } 
+        public SOmodel SalesOrder { get; set; }
+        public DeliveryModel Delivery { get; set; } 
 
         public Dictionary<string, int> Items { get; set; }
 
@@ -32,14 +33,14 @@ namespace ProjectSAP.Pages
             ConnectionA = companyA_Service.ConnectToSAP_Company1();
             ConnectionB = companyB_Service.ConnectToSAP_CompanyB();
 
-            if (ConnectionA != true || ConnectionB!=true)
+            if (ConnectionA != true || ConnectionB != true)
             {
                 Console.WriteLine("Failed to connect to Company A or B in OnGet");
                 return;
             }
             ItemNamesA = companyA_Service.GetItemNamesA();
 
-            if(TempData["ValidPO"] != null && TempData.Peek("ValidPO").ToString()=="True")
+            if (TempData["ValidPO"] != null && TempData.Peek("ValidPO").ToString() == "True")
             {
                 TempData.Keep();
                 ValidPO = true;
@@ -48,12 +49,18 @@ namespace ProjectSAP.Pages
             }
             if (TempData["SalesOrderNum"] != null)
             {
+               
                 int soNum = Convert.ToInt32(TempData.Peek("SalesOrderNum"));
                 SalesOrder = companyB_Service.DisplaySO(soNum);
             }
+            if (TempData["DeliveryNum"] != null)
+            {
+                int dlNum = Convert.ToInt32(TempData.Peek("DeliveryNum"));
+                Delivery = companyB_Service.DisplayDelivery(dlNum);
+            }
         }
 
-       
+
         //public async Task<IActionResult> OnPost()
         //{
         //    var result_PO = -1;
@@ -110,7 +117,7 @@ namespace ProjectSAP.Pages
         //        return new JsonResult(new { success = result_SO != -1 });
         //    }
 
-           
+
 
         //    //return RedirectToPage("/CompanyA_Simulation", new { success = result != -1, validPO = ValidPO, purchaseOrder = PurchaseOrder });
         //}
@@ -150,7 +157,7 @@ namespace ProjectSAP.Pages
             if (!ConnectionB)
                 return new JsonResult(new { success = false, message = "Company B connection failed." });
 
-            Console.WriteLine("DocNum = "+TempData["DocNum"]);
+            Console.WriteLine("DocNum = " + TempData["DocNum"]);
             if (!TempData.ContainsKey("DocNum"))
                 return new JsonResult(new { success = false, message = "No valid PO found." });
 
@@ -158,9 +165,9 @@ namespace ProjectSAP.Pages
 
             //var result = companyB_Service.SalesOrderBasedOnPO(docNum);
             var result = 8; // Simulating a successful SO creation for testing purposes
-            
+
             TempData["SalesOrderNum"] = result;
-            TempData.Keep(); 
+            TempData.Keep();
 
             if (result == -1)
                 return new JsonResult(new { success = false, message = "Failed to create SO." });
@@ -168,7 +175,29 @@ namespace ProjectSAP.Pages
             return new JsonResult(new { success = true, salesOrderNum = result });
         }
 
+        public IActionResult OnPostCreateDl()
+        {
+            ConnectionB = companyB_Service.ConnectToSAP_CompanyB();
+            if (!ConnectionB)
+                return new JsonResult(new { success = false, message = "Company B connection failed." });
+            if (!TempData.ContainsKey("SalesOrderNum"))
+                return new JsonResult(new { success = false, message = "No valid SO found." });
+            int salesOrderNum = int.Parse(TempData["SalesOrderNum"].ToString());
 
+            Console.WriteLine("SalesOrderNum = " + salesOrderNum);
+
+            //var result = companyB_Service.CreateDelivery(salesOrderNum);
+            var result = 1; 
+
+            TempData["DeliveryNum"] = result;
+            TempData.Keep();
+
+            if (result == -1)
+                return new JsonResult(new { success = false, message = "Failed to create Delivery." });
+            return new JsonResult(new { success = true, deliveryNum = result });
+
+
+        }
     }
 
 

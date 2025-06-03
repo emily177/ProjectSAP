@@ -6,6 +6,7 @@
         public string? ItemName { get; set; }
         public double? Price { get; set; }
         public double Quantity { get; set; }
+        public double? TotalPrice { get { return Price * Quantity; } }
 
         public ItemModel()
         {

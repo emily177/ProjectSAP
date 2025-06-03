@@ -94,12 +94,64 @@ function CreateSO() {
                         overlay.style.display = 'none';
 
                         if (data.success) {
-                            alert("Sales Order created successfully!"); 
+                            alert("Sales Order created successfully!");
                             window.location.reload(); // Reload to update the UI
                         } else {
                             alert("Eroare la trimiterea comenzii.");
                         }
-                    }, 1000); 
+                    }, 1000);
+                } catch (err) {
+                    console.error("JSON parse error:", err);
+                    alert("Server response was not valid JSON.");
+                    overlay.style.display = 'none';
+                }
+            });
+    }
+}
+
+function CreateDelivery() {
+    // Showing overlay, animation + messages
+    const overlay = document.getElementById('loading-overlay');
+    const message = document.getElementById('loading-message');
+    overlay.style.display = 'block';
+
+    const messages = [
+        "Processing Sales Order...",
+        "Preparing items for shiping",
+        "Creating a Delivery document..",
+       
+    ]
+    let step = 0;
+    function updateMessage() {
+        if (step < messages.length) {
+            message.textContent = messages[step];
+            step++;
+            setTimeout(updateMessage, 2000); // Change message every 1.5 seconds
+        } else {
+            sendRequest();
+        }
+    }
+    updateMessage();
+
+    function sendRequest() {
+        fetch('/CompanyA_Simulation?handler=CreateDl', {
+            method: 'POST',
+            
+        })
+            .then(async response => {
+                const text = await response.text();
+                console.log("Raw Delivery:", text);
+                try {
+                    const data = JSON.parse(text);
+                    setTimeout(() => {
+                        //overlay.style.display = 'none';
+                        if (data.success) {
+                            alert("Delivery created successfully!");
+                            window.location.reload(); // Reload to update the UI
+                        } else {
+                            alert("There was an error in creating the Delivery");
+                        }
+                    }, 1000);
                 } catch (err) {
                     console.error("JSON parse error:", err);
                     alert("Server response was not valid JSON.");

@@ -92,6 +92,7 @@ namespace ProjectSAP.Services
                         ItemName = salesOrder.Lines.ItemDescription,
                         Quantity = salesOrder.Lines.Quantity,
                         Price = salesOrder.Lines.UnitPrice
+                        
                     };
                     soModel.Items.Add(item);
                 }
@@ -101,6 +102,46 @@ namespace ProjectSAP.Services
                 Console.WriteLine("Sales Order not found with DocEntry: " + DocEntry);
             }
             return soModel;
+
+        }
+        // Display Delivery Note based on DocEntry
+        public DeliveryModel DisplayDelivery(int DocEntry)
+        {
+            DeliveryModel deliveryModel = new DeliveryModel();
+
+            if (!company2.Connected)
+            {
+                Console.WriteLine("Company B is not connected.");
+                return deliveryModel;
+            }
+            Documents delivery = (Documents)company2.GetBusinessObject(BoObjectTypes.oDeliveryNotes);
+            if (delivery.GetByKey(DocEntry))
+            {
+                deliveryModel.CardCode = delivery.CardCode;
+                deliveryModel.CardName = delivery.CardName;
+                deliveryModel.DocNum = delivery.DocNum.ToString();
+                deliveryModel.DocDate = delivery.DocDate.ToString("yyyy-MM-dd");
+                deliveryModel.DocDueDate = delivery.DocDueDate.ToString("yyyy-MM-dd");
+                deliveryModel.DocTotal = delivery.DocTotal.ToString();
+                deliveryModel.DocStatus = delivery.DocumentStatus.ToString();
+                for (int i = 0; i < delivery.Lines.Count; i++)
+                {
+                    delivery.Lines.SetCurrentLine(i);
+                    ItemModel item = new ItemModel
+                    {
+                        ItemCode = delivery.Lines.ItemCode,
+                        ItemName = delivery.Lines.ItemDescription,
+                        Quantity = delivery.Lines.Quantity,
+                        Price = delivery.Lines.UnitPrice
+                    };
+                    deliveryModel.Items.Add(item);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Delivery Note not found with DocEntry: " + DocEntry);
+            }
+            return deliveryModel;
 
         }
 

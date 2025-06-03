@@ -81,6 +81,7 @@
                         }
                     </tbody>
                 </table>
+                
            </div>
            <button onclick="CreateSO()">Next step => Sales Order</button>
 
@@ -100,6 +101,7 @@
                 <p><strong>Document Number:</strong> @Model.SalesOrder.DocNum</p>
                 <p><strong>Customer Code:</strong> @Model.SalesOrder.CardCode</p>
                 <p><strong>Customer Name:</strong> @Model.SalesOrder.CardName</p>
+                <p><strong>Status:</strong> @Model.SalesOrder.DocStatus</p>
                 <p><strong>Document Date:</strong> @Model.SalesOrder.DocDate</p>
                 <p><strong>Due Date:</strong> @Model.SalesOrder.DocDueDate</p>
             </div>
@@ -111,6 +113,7 @@
                         <th>Item Name</th>
                         <th>Quantity</th>
                         <th>Unit Price</th>
+                        <th>Total Price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -121,13 +124,62 @@
                             <td>@item.ItemName</td>
                             <td>@item.Quantity</td>
                             <td>@item.Price</td>
+                            <td>@(item.Quantity * item.Price)</td>
                         </tr>
                     }
                 </tbody>
             </table>
+            <div>
+                
+                <p><strong>Total Amount:</strong> @Model.SalesOrder.DocTotal</p>
+            </div>
+        </div>
+        <button onclick="CreateDelivery()" id="button-dl">Next Step => Create Delivery </button>
+    }
+
+    @if(Model.Delivery != null)
+    {
+        <div class="sales-order-panel">
+            <h2>Delivery</h2>
+            <div>
+                <p><strong>Document Number:</strong> @Model.Delivery.DocNum</p>
+                <p><strong>Customer Code:</strong> @Model.Delivery.CardCode</p>
+                <p><strong>Customer Name:</strong> @Model.Delivery.CardName</p>
+                <p><strong>Status:</strong> @Model.Delivery.DocStatus</p>
+                <p><strong>Document Date:</strong> @Model.Delivery.DocDate</p>
+                <p><strong>Due Date:</strong> @Model.Delivery.DocDueDate</p>
+            </div>
+            <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Delivery.Items)
+                    {
+                        <tr>
+                            <td>@item.ItemCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price</td>
+                            <td>@(item.Quantity * item.Price)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+
+                <p><strong>Total Amount:</strong> @Model.Delivery.DocTotal</p>
+            </div>
         </div>
     }
-      
+  
    
   
   
