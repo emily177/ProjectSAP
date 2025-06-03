@@ -1,6 +1,5 @@
 ﻿body {
-    
-    background-color: #ffffe3;
+    background-color: rgba(254,251,216,255);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -8,21 +7,46 @@
     margin: 0;
 }
 
+.page-header {
+    background-color: rgb(69,112,117);
+    color: black;
+    padding: 60px;
+    text-align: center;
+   
+}
+
+#PO-button {
+    display: block;
+    margin: 30px auto 0 auto; /* sus 30px, auto stânga/dreapta = centrat */
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
 .item-box {
-    
+    background-color: rgba(254,251,216,255);
     border: 1px solid #ccc;
     padding: 15px;
     margin: 10px;
     border-radius: 10px;
-    width: 200px;
-    margin-left:20px;
+    width: 100%;
+    height: 160px;
+    max-width: 250px;
+    min-width: 200px;
+    box-sizing: border-box;
+    flex: 1 1 auto;
 }
 .boxes {
-    display: flex;
-    position:center;
-    flex-wrap: wrap;
-    gap: 20px; 
-    margin-left: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 30px;
+    max-width: 800px; /* opțional, pentru centrare și limitare */
+    margin: 0 auto;
 }
 
 .order {
@@ -86,5 +110,12 @@
 {
     right:30px;
 
+}
+
+.footer-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    margin-bottom: 80px; /* spațiu mare sub buton */
 }
 
