@@ -1,16 +1,9 @@
 ﻿namespace ProjectSAP.Models
 {
-    public class SOmodel
-    {
-        public string CardCode { get; set; }
-        public string CardName { get; set; }
-
-        public string DocNum { get; set; }
-        public string DocDate { get; set; }
-        public string DocDueDate { get; set; }
+    public class SOmodel : POmodel
+    {  
         public string DocTotal { get; set; }
         public string DocStatus { get; set; }
-        public List<ItemModel> Items { get; set; }
 
         public SOmodel() {
 

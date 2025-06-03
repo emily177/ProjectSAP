@@ -160,3 +160,55 @@ function CreateDelivery() {
             });
     }
 }
+
+function CreateGRPO() {
+    // Showing overlay, animation + messages
+    const overlay = document.getElementById('loading-overlay');
+    const message = document.getElementById('loading-message');
+    overlay.style.display = 'block';
+
+    const messages = [
+        "Company A is putting the items in stock...",
+        "Adding items in inventory",
+        "Creating Goods Receipt PO...",
+
+    ]
+    let step = 0;
+    function updateMessage() {
+        if (step < messages.length) {
+            message.textContent = messages[step];
+            step++;
+            setTimeout(updateMessage, 2000); // Change message every 1.5 seconds
+        } else {
+            sendRequest();
+        }
+    }
+    updateMessage();
+
+    function sendRequest() {
+        fetch('/CompanyA_Simulation?handler=CreateGRPO', {
+            method: 'POST',
+
+        })
+            .then(async response => {
+                const text = await response.text();
+                console.log("Raw GRPO:", text);
+                try {
+                    const data = JSON.parse(text);
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                        if (data.success) {
+                            alert("Goods Receipt PO created successfully!");
+                            window.location.reload(); // Reload to update the UI
+                        } else {
+                            alert("There was an error in creating GRPO");
+                        }
+                    }, 1000);
+                } catch (err) {
+                    console.error("JSON parse error:", err);
+                    alert("Server response was not valid JSON.");
+                    overlay.style.display = 'none';
+                }
+            });
+    }
+}

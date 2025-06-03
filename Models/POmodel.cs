@@ -5,11 +5,11 @@ namespace ProjectSAP.Models
 {
     public class POmodel
     {
-        public string CardCode { get; set; } // Assuming this is the customer code
-        public string CardName { get; set; } // Assuming this is the customer name
-        public string DocDate { get; set; } // Date of the purchase order
-        public string DocDueDate { get; set; } // Due date for the purchase order
-        public string DocNum { get; set; } // Document number of the purchase order
+        public string CardCode { get; set; } 
+        public string CardName { get; set; } 
+        public string DocDate { get; set; } 
+        public string DocDueDate { get; set; } 
+        public string DocNum { get; set; } 
         public List<ItemModel> Items { get; set; } = new List<ItemModel>();
 
 

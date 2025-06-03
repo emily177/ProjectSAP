@@ -13,28 +13,28 @@
 <body>
 
    <p>You enter the simulation like the customer.</p>
-
-        @foreach ( var item in Model.ItemNamesA)
-        {
-       <div class="item-box" id="box-@item.ItemCode">
-            <button onclick="selectItem('@item.ItemCode')">@item.ItemName</button>
-            <p>Price: @item.Price</p>
-
-            <div class="order" id="controls-@item.ItemCode" style="display:none">
-                <label for="quantity">Quantity:</label>
-                <input type="number" id="qty-@item.ItemCode" name="quantity" min="1" max="100" value="1">
-                <button onclick="orderItem('@item.ItemCode')">Add to Cart</button>
-            </div>
-       </div>
-
-         }
-        <button onclick="submitOrder()" id="PO-button">Create Purchase Order</button>
         
-        
-        @if(Model.ValidPO == true)
+        @if(Model.ValidPO == false)
         {
+
+            @foreach (var item in Model.ItemNamesA)
+            {
+                <div class="item-box" id="box-@item.ItemCode">
+                    <button onclick="selectItem('@item.ItemCode')">@item.ItemName</button>
+                    <p>Price: @item.Price</p>
+
+                    <div class="order" id="controls-@item.ItemCode" style="display:none">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="qty-@item.ItemCode" name="quantity" min="1" max="100" value="1">
+                        <button onclick="orderItem('@item.ItemCode')">Add to Cart</button>
+                    </div>
+                </div>
+
+            }
+            <button onclick="submitOrder()" id="PO-button">Create Purchase Order</button>
+        }
            
-            <script>
+            @* <script>
                 document.addEventListener("DOMContentLoaded", function () {
                     // Ascunde toate item-box-urile
                     let boxes = document.getElementsByClassName('item-box');
@@ -48,17 +48,22 @@
                         poButton.style.display = 'none';
                     }
                 });
-            </script>
+            </script> *@
 
+          
+
+        
+        @if(Model.PurchaseOrder != null)
+        {
             <div class="purchase-order-panel">
-               <h2>Purchase Order</h2>
-               <div>
+                <h2>Purchase Order</h2>
+                <div>
                     <p><strong>Document Number:</strong> @Model.PurchaseOrder.DocNum</p>
                     <p><strong>Customer Code:</strong> @Model.PurchaseOrder.CardCode</p>
                     <p><strong>Customer Name:</strong> @Model.PurchaseOrder.CardName</p>
                     <p><strong>Document Date:</strong> @Model.PurchaseOrder.DocDate</p>
                     <p><strong>Due Date:</strong> @Model.PurchaseOrder.DocDueDate</p>
-               </div>
+                </div>
                 <h3>Items</h3>
                 <table>
                     <thead>
@@ -81,10 +86,9 @@
                         }
                     </tbody>
                 </table>
-                
-           </div>
-           <button onclick="CreateSO()">Next step => Sales Order</button>
 
+            </div>
+            <button onclick="CreateSO()">Next step => Sales Order</button>
         }
     <div id="loading-overlay" style=" display:none;">
         <div id="loading-spinner">
@@ -178,6 +182,52 @@
                 <p><strong>Total Amount:</strong> @Model.Delivery.DocTotal</p>
             </div>
         </div>
+        <button onclick="CreateGRPO()">Next step => Create GRPO</button>
+    }
+
+    @if(Model.GRPO != null)
+    {
+        <div class="purchase-order-panel">
+
+            <h2>Goods Receipt PO</h2>
+            <div>
+                <p><strong>Document Number:</strong> @Model.GRPO.DocNum</p>
+                <p><strong>Vendor Code:</strong> @Model.GRPO.CardCode</p>
+                <p><strong>Vendor Name:</strong> @Model.GRPO.CardName</p>
+                <p><strong>Status:</strong> @Model.GRPO.DocStatus</p>
+                <p><strong>Document Date:</strong> @Model.GRPO.DocDate</p>
+                <p><strong>Due Date:</strong> @Model.GRPO.DocDueDate</p>
+            </div>
+            <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.GRPO.Items)
+                    {
+                        <tr>
+                            <td>@item.ItemCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price</td>
+                            <td>@(item.Quantity * item.Price)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div>
+                <p><strong>Total Amount:</strong> @Model.GRPO.DocTotal</p>
+            </div>
+
+        </div>
+        <button onclick="CreateInvoice()">Next step => Create AR/Invoice</button>
     }
   
    

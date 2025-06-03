@@ -16,9 +16,10 @@ namespace ProjectSAP.Pages
         public bool ConnectionB { get; set; }
         public bool ValidPO { get; set; } = false;
         public List<ItemModel> ItemNamesA { get; set; } = new List<ItemModel>();
-        public POmodel PurchaseOrder { get; set; } = new POmodel();
+        public POmodel PurchaseOrder { get; set; } 
         public SOmodel SalesOrder { get; set; }
         public DeliveryModel Delivery { get; set; } 
+        public GRPOmodel GRPO { get; set; } 
 
         public Dictionary<string, int> Items { get; set; }
 
@@ -44,7 +45,7 @@ namespace ProjectSAP.Pages
             {
                 TempData.Keep();
                 ValidPO = true;
-                int result = Convert.ToInt32(TempData.Peek("DocNum"));
+                int result = Convert.ToInt32(TempData.Peek("PO_Num"));
                 PurchaseOrder = companyA_Service.DiplayPO(result);
             }
             if (TempData["SalesOrderNum"] != null)
@@ -58,69 +59,12 @@ namespace ProjectSAP.Pages
                 int dlNum = Convert.ToInt32(TempData.Peek("DeliveryNum"));
                 Delivery = companyB_Service.DisplayDelivery(dlNum);
             }
+            if (TempData["GRPO_Num"] != null)
+            {
+                int grpoNum = Convert.ToInt32(TempData.Peek("GRPO_Num"));
+                GRPO = companyA_Service.DisplayGRPO(grpoNum);
+            }
         }
-
-
-        //public async Task<IActionResult> OnPost()
-        //{
-        //    var result_PO = -1;
-        //    var result_SO = -1;
-        //    ConnectionA = companyA_Service.ConnectToSAP_Company1();
-        //    ConnectionB = companyB_Service.ConnectToSAP_CompanyB();
-        //    if (ConnectionA == false || ConnectionB==false)
-        //    {
-        //        return new JsonResult(new { success = false, message = "Failed to connect to Company A or Company B." });
-        //    }
-
-        //    using var reader = new StreamReader(Request.Body);
-        //    var body = await reader.ReadToEndAsync();
-
-        //    var items = JsonSerializer.Deserialize<List<ItemModel>>(body,
-        //        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-        //    if (items == null || items.Count == 0)
-        //        return new JsonResult(new { success = false, message = "No items received." });
-
-        //    Console.WriteLine(items.Count + " items received for purchase order.");
-
-
-        //    if (ValidPO == false)
-        //    {
-        //        //result = companyA_Service.PurchaseOrder(items);
-        //        result_PO = 3;
-        //        if (result_PO != -1)
-        //        {
-        //            TempData["ValidPO"] = true;
-        //            ValidPO = true;
-        //            TempData["DocNum"] = result_PO.ToString();
-        //            Console.WriteLine("Purchase order created successfully.");
-        //        }
-        //        else
-        //        {
-        //            ValidPO = false;
-        //            Console.WriteLine("Failed to create purchase order.");
-        //        }
-        //        return new JsonResult(new { success = result_PO != -1 });
-        //    }
-        //    else
-        //    {
-        //        result_SO = companyB_Service.SalesOrderBasedOnPO(result_PO);
-        //        if (result_SO == -1)
-        //        {
-        //            Console.WriteLine("Failed to create sales order based on purchase order.");
-        //            return new JsonResult(new { success = false, message = "Failed to create sales order based on purchase order." });
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("Sales order created successfully based on purchase order.");
-        //        }
-        //        return new JsonResult(new { success = result_SO != -1 });
-        //    }
-
-
-
-        //    //return RedirectToPage("/CompanyA_Simulation", new { success = result != -1, validPO = ValidPO, purchaseOrder = PurchaseOrder });
-        //}
 
         public async Task<IActionResult> OnPostCreatePO()
         {
@@ -142,10 +86,10 @@ namespace ProjectSAP.Pages
                 Console.WriteLine("Failed to create purchase order.");
                 return new JsonResult(new { success = false, message = "Failed to create PO" });
             }
-            Console.WriteLine("Purchase order created successfully with DocNum: " + docNum);
+            Console.WriteLine("Purchase order created successfully with PO_Num: " + docNum);
 
 
-            TempData["DocNum"] = docNum;
+            TempData["PO_Num"] = docNum;
             TempData["ValidPO"] = true;
 
             return new JsonResult(new { success = true, docNum });
@@ -157,14 +101,14 @@ namespace ProjectSAP.Pages
             if (!ConnectionB)
                 return new JsonResult(new { success = false, message = "Company B connection failed." });
 
-            Console.WriteLine("DocNum = " + TempData["DocNum"]);
-            if (!TempData.ContainsKey("DocNum"))
+            Console.WriteLine("PO_Num = " + TempData["PO_Num"]);
+            if (!TempData.ContainsKey("PO_Num"))
                 return new JsonResult(new { success = false, message = "No valid PO found." });
 
-            int docNum = int.Parse(TempData["DocNum"].ToString());
+            int docNum = int.Parse(TempData["PO_Num"].ToString());
 
             //var result = companyB_Service.SalesOrderBasedOnPO(docNum);
-            var result = 8; // Simulating a successful SO creation for testing purposes
+            var result = 8; 
 
             TempData["SalesOrderNum"] = result;
             TempData.Keep();
@@ -196,6 +140,35 @@ namespace ProjectSAP.Pages
                 return new JsonResult(new { success = false, message = "Failed to create Delivery." });
             return new JsonResult(new { success = true, deliveryNum = result });
 
+
+        }
+
+        public IActionResult OnPostCreateGRPO()
+        {
+            // We will make a GRPO document based on the PO created in Company A
+            ConnectionA = companyA_Service.ConnectToSAP_Company1();
+            if (!ConnectionA)
+                return new JsonResult(new { success = false, message = "Company A connection failed." });
+
+            if (!TempData.ContainsKey("PO_Num"))
+                return new JsonResult(new { success = false, message = "No valid PO found." });
+
+            int poNum = int.Parse(TempData["PO_Num"].ToString());
+            Console.WriteLine("PO_Num = " + poNum);
+            //var result = companyA_Service.GoodsReceiptPO(poNum);
+            var result = 3; // Simulating a successful GRPO creation for testing purposes
+            if (result == -1)
+            {
+                Console.WriteLine("Failed to create GRPO.");
+                return new JsonResult(new { success = false, message = "Failed to create GRPO." });
+            }
+
+            Console.WriteLine("GRPO created successfully with GRPO_Num: " + result);
+
+            TempData["GRPO_Num"] = result;
+            TempData.Keep();
+
+            return new JsonResult(new { success = true, message = "GRPO creation initiated." });
 
         }
     }

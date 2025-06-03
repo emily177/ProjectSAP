@@ -101,6 +101,46 @@ namespace ProjectSAP.Services
             }
             return poModel;
         }
+        public GRPOmodel DisplayGRPO(int DocEntry)
+        {
+            GRPOmodel grpo = new GRPOmodel();
+            if (company1.Connected)
+            {
+                Documents goodsReceiptPO = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
+                if (goodsReceiptPO.GetByKey(DocEntry))
+                {
+                    grpo.DocNum = goodsReceiptPO.DocNum.ToString();
+                    grpo.CardCode = goodsReceiptPO.CardCode;
+                    grpo.CardName = goodsReceiptPO.CardName;
+                    grpo.DocDate = goodsReceiptPO.DocDate.ToString("yyyy-MM-dd");
+                    grpo.DocDueDate = goodsReceiptPO.DocDueDate.ToString("yyyy-MM-dd");
+                    grpo.PaymentTerms = goodsReceiptPO.GroupNumber;
+                    grpo.PaymentMethod = goodsReceiptPO.PaymentMethod;
+                    for (int i = 0; i < goodsReceiptPO.Lines.Count; i++)
+                    {
+                        goodsReceiptPO.Lines.SetCurrentLine(i);
+                        ItemModel item = new ItemModel
+                        {
+                            ItemCode = goodsReceiptPO.Lines.ItemCode,
+                            ItemName = goodsReceiptPO.Lines.ItemDescription,
+                            Price = goodsReceiptPO.Lines.UnitPrice,
+                            Quantity = goodsReceiptPO.Lines.Quantity,
+                            InStock = goodsReceiptPO.Lines.OpenAmount 
+                        };
+                        grpo.Items.Add(item);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Goods Receipt PO not found with DocNum: " + DocEntry);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not connected to SAP Business One.");
+            }
+            return grpo;
+        }
 
         // Method to create a Purchase Order before a Sales Order
         // Step 1
@@ -215,13 +255,13 @@ namespace ProjectSAP.Services
 
 
         //Step 5
-        public bool GoodsReceiptPO(int DocEntryPO)
+        public int GoodsReceiptPO(int DocEntryPO)
         {
             Documents po = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseOrders);
             if (po.GetByKey(DocEntryPO) == false)
             {
                 Console.WriteLine("Purchase Order not found with DocEntry: " + DocEntryPO);
-                return false;
+                return -1;
             }
             else
             {
@@ -249,12 +289,12 @@ namespace ProjectSAP.Services
                     company1.GetLastError(out errorCode, out errorMessage);
                     Console.WriteLine("Error adding Goods Receipt PO: " + errorCode + " - " + errorMessage);
 
-                    return false;
+                    return -1;
                 }
                 else
                 {
                     Console.WriteLine("Goods Receipt PO added successfully.");
-                    return true;
+                    return Convert.ToInt32(company1.GetNewObjectKey());
                 }
 
 
