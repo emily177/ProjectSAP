@@ -75,17 +75,51 @@
         height: 10vh;
     }
 
-    .company-button:hover {
+    #start:hover {
         background-color: rgba(251,238,186,255);
         transform: scale(1.05);
         opacity: 1;
     }
 
 #description {
-    white-space: pre-line;
-    min-height: 60px;
-    transition: opacity 0.3s ease;
+    font-size: 1rem;
+    text-align: center;
+    min-height: 70px;
+    max-width: 700px;
+    margin: 20px auto;
+    transition: all 0.3s ease;
+    position: relative;
 }
+
+    /* Stilul de message box */
+    #description.tooltip-box {
+        background-color: #fffdd0;
+        color: #000;
+        border: 1px solid #999;
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+/* Săgeata este inițial ascunsă */
+.tooltip-arrow {
+    display: none;
+    position: absolute;
+    top: 100%;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #fffdd0;
+    transition: left 0.3s ease;
+}
+
+/* Săgeata apare doar când avem tooltip-box */
+#description.tooltip-box .tooltip-arrow {
+    display: block;
+}
+
+
 
 
 
@@ -111,5 +145,6 @@
     text-decoration: none;
    
 }
+
 
    

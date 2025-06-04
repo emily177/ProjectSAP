@@ -20,14 +20,23 @@
        
         <div class="cover">
             <h1 class="welcome">Welcome to the Intercompany Simulation for SAP Business One </h1>
-            <p id="description">Please choose your start in the simulation:</p> 
-            <div id="tooltip" class="tooltip-box" style="display: none;"></div>
+            <p id="description">
+                <span id="desc-text">
+                   An Intercompany simulation is a learning or testing environment designed to 
+                   mimic how multiple companies or business units interact with 
+                   each other within the same organization using SAP Business One, 
+                   which is an ERP (Enterprise Resource Planning) system.
+                   For this simulation, we will use the minimum of two companies.
+
+                </span>
+                <span class="tooltip-arrow" id="tooltip-arrow"></span>
+            </p>
 
             <div class="button">
-                <div class="company-button"
+                <div class="company-button" id="companyA"
                      onmouseover="showDescription(`Company A is the customer in this simulation.
                         We will see what role it takes in the transaction of documents and how many steps
-                        are required to purchase items and add them to the database.`)"
+                        are required to purchase items and add them to the database.`, 'companyA' )"
                      onmouseout="resetDescription()">
                     <i class="fas fa-building icon"></i>
                     <p class="role">Customer</p>
@@ -39,9 +48,9 @@
                     <a asp-page="/CompanyA_Simulation" class="link"> Start the Simulation </a>
                 </div>
 
-                <div class="company-button" 
+                <div class="company-button" id="companyB"
                      onmouseover="showDescription(`Every purchase needs a seller. In this simulation, that’s Company B — the Vendor.
-                        It’s responsible for delivering the products and issuing the invoice for payment.`)" 
+                        It’s responsible for delivering the products and issuing the invoice for payment.`, 'companyB')" 
                      onmouseout="resetDescription()">
                     <i class="fas fa-industry icon"></i>
                     <p class="role">Vendor</p>
@@ -53,17 +62,7 @@
 
     </div>
 
-    <script>
-        const defaultText = "Please choose your start in the simulation:";
-
-        function showDescription(text) {
-            document.getElementById("description").textContent = text;
-        }
-
-        function resetDescription() {
-            document.getElementById("description").textContent = defaultText;
-        }
-    </script>
+    <script src="/js/Index.js"></script>
 
 
 </body>
