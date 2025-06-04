@@ -43,68 +43,59 @@
                 }
             </div>
 
-            <div class="footer-section">
-                 <button onclick="submitOrder()" id="PO-button">Create Purchase Order</button>
-            </div>
+            <button onclick="submitOrder()" id="PO-button">Create Purchase Order</button>
+            
            
         }
            
-            @* <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    // Ascunde toate item-box-urile
-                    let boxes = document.getElementsByClassName('item-box');
-                    for (let i = 0; i < boxes.length; i++) {
-                        boxes[i].style.display = 'none';
-                    }
-
-                    // Ascunde butonul de creare PO
-                    let poButton = document.getElementById('PO-button');
-                    if (poButton) {
-                        poButton.style.display = 'none';
-                    }
-                });
-            </script> *@
-
-          
 
         
         @if(Model.PurchaseOrder != null)
         {
-            <div class="purchase-order-panel">
-                <h2>Purchase Order</h2>
-                <div>
-                    <p><strong>Document Number:</strong> @Model.PurchaseOrder.DocNum</p>
-                    <p><strong>Customer Code:</strong> @Model.PurchaseOrder.CardCode</p>
-                    <p><strong>Customer Name:</strong> @Model.PurchaseOrder.CardName</p>
-                    <p><strong>Document Date:</strong> @Model.PurchaseOrder.DocDate</p>
-                    <p><strong>Due Date:</strong> @Model.PurchaseOrder.DocDueDate</p>
-                </div>
-                <h3>Items</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Item Code</th>
-                            <th>Item Name</th>
-                            <th>Quantity</th>
-                            <th>Unit Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.PurchaseOrder.Items)
-                        {
+            <div class="container">
+                <div class="purchase-order-panel">
+                    <h2>Purchase Order</h2>
+                    <div>
+                        <p><strong>Document Number:</strong> @Model.PurchaseOrder.DocNum</p>
+                        <p><strong>Customer Code:</strong> @Model.PurchaseOrder.CardCode</p>
+                        <p><strong>Customer Name:</strong> @Model.PurchaseOrder.CardName</p>
+                        <p><strong>Document Date:</strong> @Model.PurchaseOrder.DocDate</p>
+                        <p><strong>Due Date:</strong> @Model.PurchaseOrder.DocDueDate</p>
+                    </div>
+                    <h3>Items</h3>
+                    <table>
+                        <thead>
                             <tr>
-                                <td>@item.ItemCode</td>
-                                <td>@item.ItemName</td>
-                                <td>@item.Quantity</td>
-                                <td>@item.Price</td>
+                                <th>Item Code</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.PurchaseOrder.Items)
+                            {
+                                <tr>
+                                    <td>@item.ItemCode</td>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.Price</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
 
+                <div class="button-wrapper">
+                    <button onclick="CreateSO()" class="nextStep">Next step ⇒ Sales Order</button>
+                </div>
+                
             </div>
-            <button onclick="CreateSO()">Next step => Sales Order</button>
-        }
+           
+            
+    }
+   
+
     <div id="loading-overlay" style=" display:none;">
         <div id="loading-spinner">
             <div class="spinner"></div>
@@ -114,50 +105,63 @@
        
     @if(Model.SalesOrder != null)
     {
-        <div class="sales-order-panel">
-            <h2>Sales Order</h2>
-            <div>
-                <p><strong>Document Number:</strong> @Model.SalesOrder.DocNum</p>
-                <p><strong>Customer Code:</strong> @Model.SalesOrder.CardCode</p>
-                <p><strong>Customer Name:</strong> @Model.SalesOrder.CardName</p>
-                <p><strong>Status:</strong> @Model.SalesOrder.DocStatus</p>
-                <p><strong>Document Date:</strong> @Model.SalesOrder.DocDate</p>
-                <p><strong>Due Date:</strong> @Model.SalesOrder.DocDueDate</p>
-            </div>
-            <h3>Items</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item Code</th>
-                        <th>Item Name</th>
-                        <th>Quantity</th>
-                        <th>Unit Price</th>
-                        <th>Total Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.SalesOrder.Items)
-                    {
+        <div class="container">
+
+            <div class="sales-order-panel">
+                <h2>Sales Order</h2>
+                <div>
+                    <p><strong>Document Number:</strong> @Model.SalesOrder.DocNum</p>
+                    <p><strong>Customer Code:</strong> @Model.SalesOrder.CardCode</p>
+                    <p><strong>Customer Name:</strong> @Model.SalesOrder.CardName</p>
+                    <p><strong>Status:</strong> @Model.SalesOrder.DocStatus</p>
+                    <p><strong>Document Date:</strong> @Model.SalesOrder.DocDate</p>
+                    <p><strong>Due Date:</strong> @Model.SalesOrder.DocDueDate</p>
+                </div>
+                <h3>Items</h3>
+                <table>
+                    <thead>
                         <tr>
-                            <td>@item.ItemCode</td>
-                            <td>@item.ItemName</td>
-                            <td>@item.Quantity</td>
-                            <td>@item.Price</td>
-                            <td>@(item.Quantity * item.Price)</td>
+                            <th>Item Code</th>
+                            <th>Item Name</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Price</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-            <div>
-                
-                <p><strong>Total Amount:</strong> @Model.SalesOrder.DocTotal</p>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.SalesOrder.Items)
+                        {
+                            <tr>
+                                <td>@item.ItemCode</td>
+                                <td>@item.ItemName</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Price</td>
+                                <td>@(item.Quantity * item.Price)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div>
+
+                    <p><strong>Total Amount:</strong> @Model.SalesOrder.DocTotal</p>
+                </div>
+
+
+            </div>
+
+            <div class="button-wrapper">
+                <button onclick="CreateDelivery()" class="nextStep">Next Step => Create Delivery </button>
             </div>
         </div>
-        <button onclick="CreateDelivery()" id="button-dl">Next Step => Create Delivery </button>
-    }
+       
+
+        
+     }
+   
 
     @if(Model.Delivery != null)
     {
+        
         <div class="sales-order-panel">
             <h2>Delivery</h2>
             <div>
@@ -197,7 +201,11 @@
                 <p><strong>Total Amount:</strong> @Model.Delivery.DocTotal</p>
             </div>
         </div>
-        <button onclick="CreateGRPO()">Next step => Create GRPO</button>
+
+        <div class="next-step-container">
+             <button onclick="CreateGRPO()" class="nextStep" >Next step => Create GRPO</button>
+        </div>
+
     }
 
     @if(Model.GRPO != null)
@@ -242,7 +250,11 @@
             </div>
 
         </div>
-        <button onclick="CreateARInvoice()">Next step => Create A/R Invoice</button>
+
+        <div class="next-step-container">
+            <button onclick="CreateARInvoice()" class="nextStep" >Next step => Create A/R Invoice</button>
+        </div>
+
     }
     
     @if(Model.ARInvoice!= null)
@@ -283,9 +295,11 @@
             </table>
             <div>
                 <p><strong>Total Amount:</strong> @Model.ARInvoice.DocTotal</p>
-             </div>
-            <button onclick="CreateAPInvoice()">Next step => Create A/P Invoice</button>
+            </div>
+        </div>
 
+        <div class="next-step-container">
+            <button onclick="CreateAPInvoice()" class="nextStep">Next step => Create A/P Invoice</button>
         </div>
     }
 
@@ -330,6 +344,8 @@
             </div>
         </div>
     }
+
+    
    
    
   
@@ -337,4 +353,9 @@
 
    <script src="/js/CompanyA.js"></script>
 </body>
+
 </html>
+
+<footer>
+
+</footer>
