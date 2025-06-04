@@ -7,15 +7,21 @@
 <html>
 <head>
     <meta charset="utf-8" /> 
+    <title>Intercompany Simulation</title>
     <link rel="stylesheet" href="/css/CompanyA.css">
    
 </head>
 <body>
 
     <div class="page-header">
-        <h1>Company A – Order Items</h1>
-        <p>Below are the available items. Select and add them to your cart.</p>
+        <h1>Step 1: Choose your Items</h1>
+        <p class="header-description">
+            You are now Company A — a customer looking to purchase products from Company B. Below, you can see the available items from this vendor. To buy something through SAP Business One, you must first create a <strong>Purchase Order</strong>. Please select the items you want to buy, enter the desired quantity, and add them to the "cart" so they can be included in the Purchase Order.
+        </p>
     </div>
+
+
+    <img src="~/css/Images/item3.jpg" alt="Background" class="full-bg">
 
    
         
@@ -24,21 +30,23 @@
             <div class="boxes">
                 @foreach (var item in Model.ItemNamesA)
                 {
-                    <div class="item-box" id="box-@item.ItemCode">
-                        <button onclick="selectItem('@item.ItemCode')">@item.ItemName</button>
+                    <div class="item-box" id="box-@item.ItemCode" onclick="selectItem('@item.ItemCode')">
+                        <h3>@item.ItemName</h3>
                         <p>Price: @item.Price RON</p>
 
-                        <div class="order" id="controls-@item.ItemCode" style="display:none">
+                        <div class="order" id="controls-@item.ItemCode" style="display:none" onclick="event.stopPropagation();">
                             <label for="quantity">Quantity:</label>
                             <input type="number" id="qty-@item.ItemCode" name="quantity" min="1" max="100" value="1">
                             <button onclick="orderItem('@item.ItemCode')">Add to Cart</button>
                         </div>
                     </div>
-
                 }
             </div>
-            <button onclick="submitOrder()" id="PO-button">Create Purchase Order</button>
 
+            <div class="footer-section">
+                 <button onclick="submitOrder()" id="PO-button">Create Purchase Order</button>
+            </div>
+           
         }
            
             @* <script>
@@ -323,9 +331,7 @@
         </div>
     }
    
-    <div class="footer-section">
-        
-    </div>
+   
   
   
 

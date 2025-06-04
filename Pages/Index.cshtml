@@ -20,21 +20,51 @@
        
         <div class="cover">
             <h1 class="welcome">Welcome to the Intercompany Simulation for SAP Business One </h1>
-            <p > Please choose your start in the simulation:</p>
+            <p id="description">Please choose your start in the simulation:</p> 
+            <div id="tooltip" class="tooltip-box" style="display: none;"></div>
+
             <div class="button">
-                <div class="company-button">
+                <div class="company-button"
+                     onmouseover="showDescription(`Company A is the customer in this simulation.
+                        We will see what role it takes in the transaction of documents and how many steps
+                        are required to purchase items and add them to the database.`)"
+                     onmouseout="resetDescription()">
                     <i class="fas fa-building icon"></i>
                     <p class="role">Customer</p>
-                    <a asp-page="/CompanyA_Simulation" class="link"> Company A </a>
+                    <a class="link"> Company A </a>
                 </div>
-                <div class="company-button"> 
+
+
+                <div class="company-button" id="start">
+                    <a asp-page="/CompanyA_Simulation" class="link"> Start the Simulation </a>
+                </div>
+
+                <div class="company-button" 
+                     onmouseover="showDescription(`Every purchase needs a seller. In this simulation, that’s Company B — the Vendor.
+                        It’s responsible for delivering the products and issuing the invoice for payment.`)" 
+                     onmouseout="resetDescription()">
                     <i class="fas fa-industry icon"></i>
-                    <p class="role">Vender</p>
-                    <a asp-page="/Page2" class="link"> Company B </a>
+                    <p class="role">Vendor</p>
+                    <a class="link"> Company B </a>
                 </div>
+
             </div>
         </div>
+
     </div>
+
+    <script>
+        const defaultText = "Please choose your start in the simulation:";
+
+        function showDescription(text) {
+            document.getElementById("description").textContent = text;
+        }
+
+        function resetDescription() {
+            document.getElementById("description").textContent = defaultText;
+        }
+    </script>
+
 
 </body>
 </html>

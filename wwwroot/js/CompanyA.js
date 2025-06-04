@@ -1,7 +1,15 @@
 ﻿const selectedItems = {}; // { itemCode: quantity }
 const cart = [];
 function selectItem(itemCode) {
-    document.getElementById(`controls-${itemCode}`).style.display = 'block';
+    const cont = document.getElementById(`controls-${itemCode}`);
+    if (cont.style.display === "none" || cont.style.display === "") {
+        cont.style.display = "block";
+    }
+    else {
+        cont.style.display = "none";
+    }
+       
+
 }
 
 function orderItem(itemCode) {

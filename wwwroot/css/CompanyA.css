@@ -1,45 +1,107 @@
 ﻿body {
-    background-color: rgba(254,251,216,255);
+    
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: 100vh;
     margin: 0;
 }
-
-.page-header {
-    background-color: rgb(69,112,117);
-    color: black;
-    padding: 60px;
-    text-align: center;
-   
+.full-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
 }
+
+
+/*.page-header {
+    background-image: url("Images/header2.jpg");
+    background-color: rgba(253,253,253,255);
+    background-repeat: no-repeat;
+    background-size: contain;
+    padding: 60px;
+    height: 8vw;
+    color: black;
+    text-align: right;
+    font-size: 1.2vw;
+}*/
+.page-header {
+    background-image: url("Images/header2.jpg");
+    background-color: rgba(253, 253, 253, 255);
+    opacity:0.8;
+    background-repeat: no-repeat;
+    background-size: contain;
+    
+    padding: 40px 60px;
+    color: black;
+    text-align: right;
+    font-size: 1.1vw; /* dimensiune de bază a textului */
+}
+
+    .page-header h1 {
+        font-size: 2.2vw; /* titlu mai mare */
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+.header-description {
+    line-height: 1.3; /* distanță mai mică între rânduri */
+    max-width: 60ch; /* limitează lățimea pentru linii egale */
+    margin-left: auto; /* pentru aliniere dreapta */
+    margin-right: 0;
+}
+
+
+
+
 
 #PO-button {
     display: block;
-    margin: 30px auto 0 auto; /* sus 30px, auto stânga/dreapta = centrat */
+    margin: 10px auto 100px auto; 
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #2196F3;
-    color: white;
+    background-color: rgba(239,200,1,255);
+    color: black;
     border: none;
     border-radius: 8px;
     cursor: pointer;
 }
 
+
 .item-box {
-    background-color: rgba(254,251,216,255);
-    border: 1px solid #ccc;
+    background-color: rgba(255,233,153,255);
+    /*opacity: 0.8;*/
+    border: 2px solid black;
+    border-radius: 12px;
     padding: 15px;
     margin: 10px;
-    border-radius: 10px;
     width: 100%;
     height: 160px;
     max-width: 250px;
     min-width: 200px;
     box-sizing: border-box;
-    flex: 1 1 auto;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-align: center;
 }
+
+    .item-box:hover {
+        transform: scale(0.97); /* efect de apăsare */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    .item-box h3, .item-box p {
+        margin: 10px 0;
+    }
+
+    .item-box input,
+    .item-box button {
+        margin-top: 10px;
+    }
+
 .boxes {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -115,7 +177,7 @@
 .footer-section {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
-    margin-bottom: 80px; /* spațiu mare sub buton */
+    margin-top: 4px;
+    margin-bottom: 10px; 
 }
 
