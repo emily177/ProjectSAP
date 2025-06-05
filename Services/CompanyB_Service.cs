@@ -19,6 +19,11 @@ namespace ProjectSAP.Services
             companyA_Service = new CompanyA_Service();
         }
 
+        public Company GetCompany()
+        {
+            return company2;
+        }
+
 
         //Company 2
         public bool ConnectToSAP_CompanyB()

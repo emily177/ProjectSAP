@@ -1,4 +1,6 @@
-﻿const selectedItems = {}; // { itemCode: quantity }
+﻿
+
+const selectedItems = {}; // { itemCode: quantity }
 const cart = [];
 function selectItem(itemCode) {
     const cont = document.getElementById(`controls-${itemCode}`);
@@ -80,7 +82,7 @@ function CreateSO() {
         if (step < messages.length) {
             message.textContent = messages[step];
             step++;
-            setTimeout(updateMessage, 1500); // Change message every 1.5 seconds
+            setTimeout(updateMessage, 2000); // Change message every 1.5 seconds
         } else {
             sendRequest();
         }
@@ -102,8 +104,10 @@ function CreateSO() {
                         overlay.style.display = 'none';
 
                         if (data.success) {
-                            alert("Sales Order created successfully!");
-                            window.location.reload(); // Reload to update the UI
+                            //alert("Sales Order created successfully!");
+                            //window.location.reload(); // Reload to update the UI
+                            const panel = document.querySelector(".containerB");
+                            panel.innerHTML = buildSOPanel(data.salesOrder);
                         } else {
                             alert("Eroare la trimiterea comenzii.");
                         }
@@ -329,5 +333,57 @@ function CreateAPInvoice() {
     }
 
 } 
+
+function buildSOPanel(salesOrder) {
+    let html = `
+        <div class="panel">
+            <h2>Sales Order</h2>
+            <div>
+                <p><strong>Document Number:</strong> ${salesOrder.docNum}</p>
+                <p><strong>Customer Code:</strong> ${salesOrder.cardCode}</p>
+                <p><strong>Customer Name:</strong> ${salesOrder.cardName}</p>
+                <p><strong>Status:</strong> ${salesOrder.docStatus}</p>
+                <p><strong>Document Date:</strong> ${salesOrder.docDate}</p>
+                <p><strong>Due Date:</strong> ${salesOrder.docDueDate}</p>
+            </div>
+            <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+    //const salesOrder = response.salesOrder;
+    for (const item of salesOrder.items) {
+        html += `
+                <tr>
+                    <td>${item.itemCode}</td>
+                    <td>${item.itemName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${(item.quantity * item.price).toFixed(2)}</td>
+                </tr>`;
+    }
+
+
+    html += `
+                    </tbody>
+                </table>
+                <p><strong>Total Amount:</strong> ${salesOrder.docTotal}</p>
+            </div>
+
+            <div class="button-wrapper">
+                <button onclick="CreateDelivery()" class="nextStep">Next step ⇒ Create Delivery</button>
+            </div>
+        `;
+        return html;
+}
+
 
 

@@ -4,6 +4,7 @@ using ProjectSAP.Services;
 using ProjectSAP.Models;
 using SAPbobsCOM;
 using System.Text.Json;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ProjectSAP.Pages
 {
@@ -117,6 +118,8 @@ namespace ProjectSAP.Pages
             if (!ConnectionB)
                 return new JsonResult(new { success = false, message = "Company B connection failed." });
 
+           
+
             Console.WriteLine("PO_Num = " + TempData["PO_Num"]);
             if (!TempData.ContainsKey("PO_Num"))
                 return new JsonResult(new { success = false, message = "No valid PO found." });
@@ -125,14 +128,18 @@ namespace ProjectSAP.Pages
 
             //var result = companyB_Service.SalesOrderBasedOnPO(docNum);
             var result = 8;
+            
 
             TempData["SalesOrderNum"] = result;
             TempData.Keep();
 
+
             if (result == -1)
                 return new JsonResult(new { success = false, message = "Failed to create SO." });
 
-            return new JsonResult(new { success = true, salesOrderNum = result });
+            SOmodel so = companyB_Service.DisplaySO(result);
+            Console.WriteLine("SAlesORder:" + so);
+            return new JsonResult(new { success = true, salesOrderNum = result, salesOrder = so });
         }
 
         public IActionResult OnPostCreateDl()
