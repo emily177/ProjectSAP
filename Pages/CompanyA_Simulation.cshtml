@@ -24,6 +24,7 @@
     <img src="~/css/Images/item3.jpg" alt="Background" class="full-bg">
 
    
+   
         
         @if(Model.ValidPO == false)
         {
@@ -47,9 +48,20 @@
             
            
         }
-           
+     
+    <div class="big-frame">
+        <div class="headers-frame">
+            <h1 id="label-left">Company A</h1>
+            <h1 id="label-right">Company B</h1>
+        </div>
 
-        
+        <div id="loading-overlay" style=" display:none;">
+            <div id="loading-spinner">
+                <div class="spinner"></div>
+                <p id="loading-message">Sending the order...</p>
+            </div>
+        </div>
+      
         @if(Model.PurchaseOrder != null)
         {
             <div class="containerA">
@@ -94,15 +106,7 @@
            
             
     }
-   
-
-    <div id="loading-overlay" style=" display:none;">
-        <div id="loading-spinner">
-            <div class="spinner"></div>
-            <p id="loading-message">Sending the order...</p>
-        </div>
-    </div>
-       
+  
     @if(Model.SalesOrder != null)
     {
         <div class="containerB">
@@ -355,6 +359,7 @@
 
         </div>
     }
+    </div>
 
     
    
