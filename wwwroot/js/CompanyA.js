@@ -74,7 +74,7 @@ function CreateSO() {
     document.getElementById("page-description").innerHTML =
         `You just make a Purchase Order like Company A. This means that `;
 
-  
+   
 
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
@@ -115,10 +115,15 @@ function CreateSO() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
-                            //alert("Sales Order created successfully!");
-                            //window.location.reload(); // Reload to update the UI
+
+                            // Delete the button for SO
+                            const oldButton = document.getElementById("button-so");
+                            oldButton.display = "none";
+                            oldButton.disabled = true;
+
                             const panel = document.querySelector(".containerB");
                             panel.innerHTML = buildSOPanel(data.salesOrder);
+
                         } else {
                             alert("Eroare la trimiterea comenzii.");
                         }
@@ -133,6 +138,8 @@ function CreateSO() {
 }
 
 function CreateDelivery() {
+
+    
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
     const message = document.getElementById('loading-message');
@@ -169,10 +176,15 @@ function CreateDelivery() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
-                            //alert("Delivery created successfully!");
-                            //window.location.reload(); // Reload to update the UI
+
+                            //Hide the button for Delivery
+                            const oldButton = document.getElementById("button-del");
+                            oldButton.display = "none";
+                            oldButton.disabled = true;
+
                             const panel = document.querySelector(".containerB");
                             panel.innerHTML = buildDeliveryPanel(data.delivery);
+
                         } else {
                             alert("There was an error in creating the Delivery");
                         }
@@ -187,6 +199,8 @@ function CreateDelivery() {
 }
 
 function CreateGRPO() {
+
+
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
     const message = document.getElementById('loading-message');
@@ -223,10 +237,16 @@ function CreateGRPO() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
-                            //alert("Goods Receipt PO created successfully!");
-                            //window.location.reload(); // Reload to update the UI
+                            // Hide the button for GRPO
+                            const oldButton = document.getElementById("button-grpo");
+                            oldButton.display = "none";
+                            oldButton.disabled = true;
+
                             const panel = document.querySelector(".containerA");
                             panel.innerHTML = buildGRPOPanel(data.grpo);
+
+                          
+
                         } else {
                             alert("There was an error in creating GRPO");
                         }
@@ -241,6 +261,7 @@ function CreateGRPO() {
 }
 
 function CreateARInvoice() {
+
 
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
@@ -278,10 +299,14 @@ function CreateARInvoice() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
-                            //alert("AR Invoice was created successfully!");
-                            //window.location.reload(); // Reload to update the UI
+                            // Hide the button for AR Invoice
+                            const oldButton = document.getElementById("button-ar");
+                            oldButton.display = "none";
+                            oldButton.disabled = true;
+
                             const panel = document.querySelector(".containerB");
                             panel.innerHTML = buildARInvPanel(data.arInvoice);
+
                         } else {
                             alert("There was an error in creating AR Invoice");
                         }
@@ -297,6 +322,7 @@ function CreateARInvoice() {
 }
 
 function CreateAPInvoice() {
+
 
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
@@ -335,10 +361,17 @@ function CreateAPInvoice() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
-                            //alert("AP Invoice was created successfully!");
-                            //window.location.reload(); // Reload to update the UI
+
+                            // Hide the button for AP Invoice
+                            const oldButton = document.getElementById("button-ap");
+                            oldButton.display = "none";
+                            oldButton.disabled = true;
+
                             const panel = document.querySelector(".containerA");
                             panel.innerHTML = buildAPInvPanel(data.apInvoice);
+
+                           
+
                         } else {
                             alert("There was an error in creating AP Invoice");
                         }
@@ -398,7 +431,7 @@ function buildSOPanel(salesOrder) {
             </div>
 
             <div class="button-wrapper">
-                <button onclick="CreateDelivery()" class="nextStep">Next step ⇒ Create Delivery</button>
+                <button onclick="CreateDelivery()" class="nextStep" id="button-del">Next step ⇒ Create Delivery</button>
             </div>
         `;
         return html;
@@ -445,7 +478,7 @@ function buildDeliveryPanel(delivery) {
                 <p><strong>Total Amount:</strong> ${delivery.docTotal}</p>
             </div>
             <div class="button-wrapper">
-                <button onclick="CreateGRPO()" class="nextStep">Next step ⇒ Create GRPO</button>
+                <button onclick="CreateGRPO()" class="nextStep" id="button-grpo">Next step ⇒ Create GRPO</button>
             </div>`;
     return html;
 }
@@ -494,7 +527,7 @@ function buildGRPOPanel(grpo) {
                 </div>
             </div>
             <div class="next-step-container">
-                <button onclick="CreateARInvoice()" class="nextStep" >Next step => Create A/R Invoice</button>
+                <button onclick="CreateARInvoice()" class="nextStep" id="button-ar">Next step => Create A/R Invoice</button>
             </div>
         </div>
                 `;
@@ -543,7 +576,7 @@ function buildARInvPanel(arInvoice) {
                 <p><strong>Total Amount:</strong> ${arInvoice.docTotal}</p>
             </div>
             <div class="button-wrapper">
-                <button onclick="CreateAPInvoice()" class="nextStep">Next step ⇒ Create A/P Invoice</button>
+                <button onclick="CreateAPInvoice()" class="nextStep" id="button-ap" >Next step ⇒ Create A/P Invoice</button>
             </div>`;
     return html;
 }
