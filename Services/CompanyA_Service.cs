@@ -8,7 +8,7 @@ namespace ProjectSAP.Services
     {
 
         private Company company1;
-        private readonly HttpClient httpClient;
+        //private readonly HttpClient httpClient;
 
         public CompanyA_Service()
         {

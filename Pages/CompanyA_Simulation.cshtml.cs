@@ -161,7 +161,11 @@ namespace ProjectSAP.Pages
 
             if (result == -1)
                 return new JsonResult(new { success = false, message = "Failed to create Delivery." });
-            return new JsonResult(new { success = true, deliveryNum = result });
+
+            DeliveryModel dl = companyB_Service.DisplayDelivery(result);
+            Console.WriteLine("Delivery created successfully with DeliveryNum: " + result);
+
+            return new JsonResult(new { success = true, deliveryNum = result , delivery = dl });
 
 
         }
@@ -186,12 +190,13 @@ namespace ProjectSAP.Pages
                 return new JsonResult(new { success = false, message = "Failed to create GRPO." });
             }
 
+            GRPOmodel goodsReceipt = companyA_Service.DisplayGRPO(result);
             Console.WriteLine("GRPO created successfully with GRPO_Num: " + result);
 
             TempData["GRPO_Num"] = result;
             TempData.Keep();
 
-            return new JsonResult(new { success = true, message = "GRPO creation initiated." });
+            return new JsonResult(new { success = true, grpoNumber = result, grpo = goodsReceipt });
 
         }
 
@@ -217,7 +222,9 @@ namespace ProjectSAP.Pages
 
             TempData["ARInv_Num"] = result;
             TempData.Keep();
-            return new JsonResult(new { success = true, arInvNum = result });
+
+            InvoiceModel arInv = companyB_Service.DisplayARInv(result);
+            return new JsonResult(new { success = true, arInvNum = result, arInvoice = arInv });
         }
 
         public IActionResult OnPostCreateAPInv()
@@ -239,7 +246,9 @@ namespace ProjectSAP.Pages
             Console.WriteLine("AP Invoice created successfully with APInv_Num: " + result);
             TempData["APInv_Num"] = result;
             TempData.Keep();
-            return new JsonResult(new { success = true, apInvNum = result });
+
+            InvoiceModel apInv = companyA_Service.DisplayAPInv(result);
+            return new JsonResult(new { success = true, apInvNum = result, apInvoice=apInv });
         }
     }
 

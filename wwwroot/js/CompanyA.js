@@ -17,9 +17,10 @@ function selectItem(itemCode) {
 function orderItem(itemCode) {
 
     const qty = parseInt(document.getElementById(`qty-${itemCode}`).value);
+    const name = document.getElementById(`name-${itemCode}`).textContent;
     if (qty > 0) {
         selectedItems[itemCode] = qty;
-        alert(`Added ${qty} x ${itemCode} to order`);
+        alert(`Added ${qty} x ${name} to order`);
     } else {
         alert("Quantity must be at least 1");
     }
@@ -37,6 +38,10 @@ function submitOrder() {
         alert("No items selected for order.");
         return;
     }
+    // We want to can push the button just once, to avoid creating multiple POs
+    const button = document.getElementById("PO-button");
+    button.disabled = true;
+    button.textContent = "Sending...";
 
     fetch('/CompanyA_Simulation?handler=CreatePO', {
         method: 'POST',
@@ -63,6 +68,13 @@ function submitOrder() {
 }
 
 function CreateSO() {
+
+    // Changing the information of the next step
+    document.getElementById("page-title").textContent = "Step 2: Company B creates a Sales Order";
+    document.getElementById("page-description").innerHTML =
+        `You just make a Purchase Order like Company A. This means that `;
+
+  
 
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
@@ -102,7 +114,6 @@ function CreateSO() {
                     const data = JSON.parse(text);
                     setTimeout(() => {
                         overlay.style.display = 'none';
-
                         if (data.success) {
                             //alert("Sales Order created successfully!");
                             //window.location.reload(); // Reload to update the UI
@@ -156,10 +167,12 @@ function CreateDelivery() {
                 try {
                     const data = JSON.parse(text);
                     setTimeout(() => {
-                        //overlay.style.display = 'none';
+                        overlay.style.display = 'none';
                         if (data.success) {
-                            alert("Delivery created successfully!");
-                            window.location.reload(); // Reload to update the UI
+                            //alert("Delivery created successfully!");
+                            //window.location.reload(); // Reload to update the UI
+                            const panel = document.querySelector(".containerB");
+                            panel.innerHTML = buildDeliveryPanel(data.delivery);
                         } else {
                             alert("There was an error in creating the Delivery");
                         }
@@ -210,8 +223,10 @@ function CreateGRPO() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
-                            alert("Goods Receipt PO created successfully!");
-                            window.location.reload(); // Reload to update the UI
+                            //alert("Goods Receipt PO created successfully!");
+                            //window.location.reload(); // Reload to update the UI
+                            const panel = document.querySelector(".containerA");
+                            panel.innerHTML = buildGRPOPanel(data.grpo);
                         } else {
                             alert("There was an error in creating GRPO");
                         }
@@ -263,8 +278,10 @@ function CreateARInvoice() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
-                            alert("AR Invoice was created successfully!");
-                            window.location.reload(); // Reload to update the UI
+                            //alert("AR Invoice was created successfully!");
+                            //window.location.reload(); // Reload to update the UI
+                            const panel = document.querySelector(".containerB");
+                            panel.innerHTML = buildARInvPanel(data.arInvoice);
                         } else {
                             alert("There was an error in creating AR Invoice");
                         }
@@ -318,8 +335,10 @@ function CreateAPInvoice() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
-                            alert("AP Invoice was created successfully!");
-                            window.location.reload(); // Reload to update the UI
+                            //alert("AP Invoice was created successfully!");
+                            //window.location.reload(); // Reload to update the UI
+                            const panel = document.querySelector(".containerA");
+                            panel.innerHTML = buildAPInvPanel(data.apInvoice);
                         } else {
                             alert("There was an error in creating AP Invoice");
                         }
@@ -383,6 +402,192 @@ function buildSOPanel(salesOrder) {
             </div>
         `;
         return html;
+}
+
+function buildDeliveryPanel(delivery) {
+
+    let html = `
+        <div class="panel">
+            <h2>Delivery</h2>
+            <div>
+                <p><strong>Document Number:</strong> ${delivery.docNum}</p>
+                <p><strong>Customer Code:</strong> ${delivery.cardCode}</p>
+                <p><strong>Customer Name:</strong> ${delivery.cardName}</p>
+                <p><strong>Status:</strong> ${delivery.docStatus}</p>
+                <p><strong>Document Date:</strong> ${delivery.docDate}</p>
+                <p><strong>Due Date:</strong> ${delivery.docDueDate}</p>
+            </div>
+            <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+    for (const item of delivery.items) {
+        html += `
+                <tr>
+                    <td>${item.itemCode}</td>
+                    <td>${item.itemName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${(item.quantity * item.price).toFixed(2)}</td>
+                </tr>`;
+    }
+    html += `
+                    </tbody>
+                </table>
+                <p><strong>Total Amount:</strong> ${delivery.docTotal}</p>
+            </div>
+            <div class="button-wrapper">
+                <button onclick="CreateGRPO()" class="nextStep">Next step ⇒ Create GRPO</button>
+            </div>`;
+    return html;
+}
+
+function buildGRPOPanel(grpo) {
+
+    let html = `
+        <div class="panel">
+            <h2>Goods Receipt PO</h2>
+            <div>
+                <p><strong>Document Number:</strong> ${grpo.docNum}</p>
+                <p><strong>Vendor Code:</strong> ${grpo.cardCode}</p>
+                <p><strong>Vendor Name:</strong> ${grpo.cardName}</p>
+                <p><strong>Status:</strong> ${grpo.docStatus}</p>
+                <p><strong>Document Date:</strong> ${grpo.docDate}</p>
+                <p><strong>Due Date:</strong> ${grpo.docDueDate}</p>
+            </div>
+            <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+    for (const item of grpo.items) {
+        html += `
+                <tr>
+                    <td>${item.itemCode}</td>
+                    <td>${item.itemName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${(item.quantity * item.price).toFixed(2)}</td>
+                </tr>`;
+    }
+
+        html += `
+                </tbody>
+                </table>
+                <div>
+                    <p><strong>Total Amount:</strong> @Model.GRPO.DocTotal</p>
+                </div>
+            </div>
+            <div class="next-step-container">
+                <button onclick="CreateARInvoice()" class="nextStep" >Next step => Create A/R Invoice</button>
+            </div>
+        </div>
+                `;
+
+    return html;
+}
+
+function buildARInvPanel(arInvoice) {
+
+    let html = `
+        <div class="panel">
+            <h2>A/R Invoice</h2>
+            <div>
+                <p><strong>Document Number:</strong> ${arInvoice.docNum}</p>
+                <p><strong>Customer Code:</strong> ${arInvoice.cardCode}</p>
+                <p><strong>Customer Name:</strong> ${arInvoice.cardName}</p>
+                <p><strong>Status:</strong> ${arInvoice.docStatus}</p>
+                <p><strong>Document Date:</strong> ${arInvoice.docDate}</p>
+                <p><strong>Due Date:</strong> ${arInvoice.docDueDate}</p>
+            </div>
+            <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+    for (const item of arInvoice.items) {
+        html += `
+                <tr>
+                    <td>${item.itemCode}</td>
+                    <td>${item.itemName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${(item.quantity * item.price).toFixed(2)}</td>
+                </tr>`;
+    }
+    html += `
+                    </tbody>
+                </table>
+                <p><strong>Total Amount:</strong> ${arInvoice.docTotal}</p>
+            </div>
+            <div class="button-wrapper">
+                <button onclick="CreateAPInvoice()" class="nextStep">Next step ⇒ Create A/P Invoice</button>
+            </div>`;
+    return html;
+}
+
+function buildAPInvPanel(apInvoice) {
+    let html = `
+        <div class="panel">
+            <h2>A/P Invoice</h2>
+            <div>
+                <p><strong>Document Number:</strong> ${apInvoice.docNum}</p>
+                <p><strong>Vendor Code:</strong> ${apInvoice.cardCode}</p>
+                <p><strong>Vendor Name:</strong> ${apInvoice.cardName}</p>
+                <p><strong>Status:</strong> ${apInvoice.docStatus}</p>
+                <p><strong>Document Date:</strong> ${apInvoice.docDate}</p>
+                <p><strong>Due Date:</strong> ${apInvoice.docDueDate}</p>
+            </div>
+            <h3>Items</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Item Code</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+    for (const item of apInvoice.items) {
+        html += `
+                <tr>
+                    <td>${item.itemCode}</td>
+                    <td>${item.itemName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.price}</td>
+                    <td>${(item.quantity * item.price).toFixed(2)}</td>
+                </tr>`;
+    }
+    html += `
+                    </tbody>
+                </table>
+                <p><strong>Total Amount:</strong> ${apInvoice.docTotal}</p>
+            </div>`;
+    return html;
 }
 
 

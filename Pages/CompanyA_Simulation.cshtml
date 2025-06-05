@@ -14,8 +14,8 @@
 <body>
 
     <div class="page-header">
-        <h1>Step 1: Choose your Items</h1>
-        <p class="header-description">
+        <h1 id="page-title">Step 1: Choose your Items</h1>
+        <p id="page-description"  class="header-description">
             You are now Company A — a customer looking to purchase products from Company B. Below, you can see the available items from this vendor. To buy something through SAP Business One, you must first create a <strong>Purchase Order</strong>. Please select the items you want to buy, enter the desired quantity, and add them to the "cart" so they can be included in the Purchase Order.
         </p>
     </div>
@@ -32,7 +32,7 @@
                 @foreach (var item in Model.ItemNamesA)
                 {
                     <div class="item-box" id="box-@item.ItemCode" onclick="selectItem('@item.ItemCode')">
-                        <h3>@item.ItemName</h3>
+                    <h3 id="name-@item.ItemCode">@item.ItemName</h3>
                         <p>Price: @item.Price RON</p>
 
                         <div class="order" id="controls-@item.ItemCode" style="display:none" onclick="event.stopPropagation();">
@@ -51,65 +51,69 @@
      
     <div class="big-frame">
         <div class="headers-frame">
-            <h1 id="label-left">Company A</h1>
-            <h1 id="label-right">Company B</h1>
-        </div>
-
-        <div id="loading-overlay" style=" display:none;">
-            <div id="loading-spinner">
-                <div class="spinner"></div>
-                <p id="loading-message">Sending the order...</p>
+            <h1 class="label">Company A</h1>
+           
+            <div id="loading-overlay" style=" display:none;">
+                <div id="loading-spinner">
+                    <div class="spinner"></div>
+                    <p id="loading-message">Sending the order...</p>
+                </div>
             </div>
-        </div>
-      
-        @if(Model.PurchaseOrder != null)
-        {
-            <div class="containerA">
-                <div class="panel">
-                    <h2>Purchase Order</h2>
-                    <div>
-                        <p><strong>Document Number:</strong> @Model.PurchaseOrder.DocNum</p>
-                        <p><strong>Customer Code:</strong> @Model.PurchaseOrder.CardCode</p>
-                        <p><strong>Customer Name:</strong> @Model.PurchaseOrder.CardName</p>
-                        <p><strong>Document Date:</strong> @Model.PurchaseOrder.DocDate</p>
-                        <p><strong>Due Date:</strong> @Model.PurchaseOrder.DocDueDate</p>
-                    </div>
-                    <h3>Items</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Item Code</th>
-                                <th>Item Name</th>
-                                <th>Quantity</th>
-                                <th>Unit Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.PurchaseOrder.Items)
-                            {
-                                <tr>
-                                    <td>@item.ItemCode</td>
-                                    <td>@item.ItemName</td>
-                                    <td>@item.Quantity</td>
-                                    <td>@item.Price</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
 
-                <div class="button-wrapper">
-                    <button onclick="CreateSO()" class="nextStep">Next step ⇒ Sales Order</button>
-                </div>
+            <h1 class="label">Company B</h1>
+        </div>
+
+       
+      <div class="content-panels">
+                @if(Model.PurchaseOrder != null)
+                {
+                    <div class="containerA">
+                        <div class="panel">
+                            <h2>Purchase Order</h2>
+                            <div>
+                                <p><strong>Document Number:</strong> @Model.PurchaseOrder.DocNum</p>
+                                <p><strong>Customer Code:</strong> @Model.PurchaseOrder.CardCode</p>
+                                <p><strong>Customer Name:</strong> @Model.PurchaseOrder.CardName</p>
+                                <p><strong>Document Date:</strong> @Model.PurchaseOrder.DocDate</p>
+                                <p><strong>Due Date:</strong> @Model.PurchaseOrder.DocDueDate</p>
+                            </div>
+                            <h3>Items</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item Code</th>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Unit Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.PurchaseOrder.Items)
+                                    {
+                                        <tr>
+                                            <td>@item.ItemCode</td>
+                                            <td>@item.ItemName</td>
+                                            <td>@item.Quantity</td>
+                                            <td>@item.Price</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="button-wrapper">
+                            <button onclick="CreateSO()" class="nextStep" >Next step ⇒ Sales Order</button>
+                        </div>
                 
-            </div>
+                    </div>
            
             
-    }
+            }
 
-    <div class="containerB">
+            <div class="containerB">
             
-    </div>
+            </div>
+      </div>
   
    @*  @if(Model.SalesOrder != null)
     {
@@ -167,7 +171,7 @@
      }
     *@
 
-    @if(Model.Delivery != null)
+   @*  @if(Model.Delivery != null)
     {
         <div class="containerB">
 
@@ -218,9 +222,9 @@
         </div>
 
 
-    }
+    } *@
 
-    @if(Model.GRPO != null)
+   @*  @if(Model.GRPO != null)
     {
         <div class="containerA">
             <div class="panel">
@@ -269,9 +273,9 @@
             </div>
         </div>
 
-    }
+    } *@
     
-    @if(Model.ARInvoice!= null)
+   @*  @if(Model.ARInvoice!= null)
     {
         <div class="containerB">
             <div class="panel">
@@ -317,9 +321,9 @@
                 <button onclick="CreateAPInvoice()" class="nextStep">Next step => Create A/P Invoice</button>
             </div>
         </div>
-    }
+    } *@
 
-    @if (Model.APInvoice != null)
+   @*  @if (Model.APInvoice != null)
     {
         <div class="containerA">
             <div class="panel">
@@ -361,8 +365,8 @@
                 </div>
             </div>
 
-        </div>
-    }
+        </div> 
+    }*@
     </div>
 
     

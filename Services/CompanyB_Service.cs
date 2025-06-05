@@ -11,7 +11,7 @@ namespace ProjectSAP.Services
         private Company company2;
         private CompanyA_Service companyA_Service;
 
-        private readonly HttpClient httpClient;
+       // private readonly HttpClient httpClient;
 
         public CompanyB_Service()
         {

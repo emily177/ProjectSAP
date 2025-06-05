@@ -4,7 +4,7 @@ public class SAPConnectionService
 {
     private Company company1;
     private Company company2;
-    private readonly HttpClient httpClient;
+   // private readonly HttpClient httpClient;
 
     public SAPConnectionService()
     {
