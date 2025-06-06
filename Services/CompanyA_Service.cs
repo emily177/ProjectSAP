@@ -8,7 +8,6 @@ namespace ProjectSAP.Services
     {
 
         private Company company1;
-        private readonly HttpClient httpClient;
 
         public CompanyA_Service()
         {
@@ -116,6 +115,8 @@ namespace ProjectSAP.Services
                     grpo.DocDueDate = goodsReceiptPO.DocDueDate.ToString("yyyy-MM-dd");
                     grpo.PaymentTerms = goodsReceiptPO.GroupNumber;
                     grpo.PaymentMethod = goodsReceiptPO.PaymentMethod;
+                    grpo.DocTotal = goodsReceiptPO.DocTotal.ToString();
+                    grpo.DocStatus = goodsReceiptPO.DocumentStatus.ToString();
                     for (int i = 0; i < goodsReceiptPO.Lines.Count; i++)
                     {
                         goodsReceiptPO.Lines.SetCurrentLine(i);
@@ -155,6 +156,8 @@ namespace ProjectSAP.Services
                     invoice.CardName = apInvoice.CardName;
                     invoice.DocDate = apInvoice.DocDate.ToString("yyyy-MM-dd");
                     invoice.DocDueDate = apInvoice.DocDueDate.ToString("yyyy-MM-dd");
+                    invoice.DocTotal = apInvoice.DocTotal.ToString();
+                    invoice.DocStatus = apInvoice.DocumentStatus.ToString();
                     for (int i = 0; i < apInvoice.Lines.Count; i++)
                     {
                         apInvoice.Lines.SetCurrentLine(i);
@@ -251,45 +254,45 @@ namespace ProjectSAP.Services
                 return -1;
             }
         }
-        //Step 3
-        public int UpdatePurchaseOrder(int docEntry, List<int> updatedItems)
-        {
-            try
-            {
-                SAPbobsCOM.Documents po = (SAPbobsCOM.Documents)company1.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
+        ////Step 3
+        //public int UpdatePurchaseOrder(int docEntry, List<int> updatedItems)
+        //{
+        //    try
+        //    {
+        //        SAPbobsCOM.Documents po = (SAPbobsCOM.Documents)company1.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
 
-                if (!po.GetByKey(docEntry))
-                {
-                    Console.WriteLine("Purchase Order with DocEntry " + docEntry + " not found.");
-                    return -1;
-                }
+        //        if (!po.GetByKey(docEntry))
+        //        {
+        //            Console.WriteLine("Purchase Order with DocEntry " + docEntry + " not found.");
+        //            return -1;
+        //        }
 
-                // Delete existing lines
-                po.Lines.SetCurrentLine(0);
-                int existingLines = po.Lines.Count;
-                for (int i = existingLines - 1; i >= 0; i--)
-                {
-                    po.Lines.SetCurrentLine(i);
-                    po.Lines.Quantity = updatedItems[i];
+        //        // Delete existing lines
+        //        po.Lines.SetCurrentLine(0);
+        //        int existingLines = po.Lines.Count;
+        //        for (int i = existingLines - 1; i >= 0; i--)
+        //        {
+        //            po.Lines.SetCurrentLine(i);
+        //            po.Lines.Quantity = updatedItems[i];
                      
-                }
-                int result = po.Update();
-                if (result != 0)
-                {
-                    string errorMsg = company1.GetLastErrorDescription();
-                    Console.WriteLine("Error updating PO: " + errorMsg);
-                    return -1;
-                }
+        //        }
+        //        int result = po.Update();
+        //        if (result != 0)
+        //        {
+        //            string errorMsg = company1.GetLastErrorDescription();
+        //            Console.WriteLine("Error updating PO: " + errorMsg);
+        //            return -1;
+        //        }
 
-                Console.WriteLine("Purchase Order updated successfully.");
-                return docEntry;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Exception in UpdatePurchaseOrder: " + ex.Message);
-                return -1;
-            }
-        }
+        //        Console.WriteLine("Purchase Order updated successfully.");
+        //        return docEntry;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("Exception in UpdatePurchaseOrder: " + ex.Message);
+        //        return -1;
+        //    }
+        //}
 
 
         //Step 5
@@ -340,13 +343,13 @@ namespace ProjectSAP.Services
         }
 
         // Step 8
-        public bool APInvoice(int DocEntryGRPO)
+        public int APInvoice(int DocEntryGRPO)
         {
             Documents grpo = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
             if (grpo.GetByKey(DocEntryGRPO) == false)
             {
                 Console.WriteLine("Delivery not found with DocEntry: " + DocEntryGRPO);
-                return false;
+                return -1;
             }
 
             Documents apInvoice = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
@@ -372,13 +375,13 @@ namespace ProjectSAP.Services
                 int errorCode;
                 company1.GetLastError(out errorCode, out errorMessage);
                 Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
-                return false;
+                return -1;
             }
             else
             {
                 string docEntry = company1.GetNewObjectKey();
                 Console.WriteLine("AR Invoice created with DocEntry: " + docEntry);
-                return true;
+                return Convert.ToInt32(docEntry);
             }
         }
     }

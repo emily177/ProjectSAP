@@ -4,6 +4,7 @@ using ProjectSAP.Services;
 using ProjectSAP.Models;
 using SAPbobsCOM;
 using System.Text.Json;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ProjectSAP.Pages
 {
@@ -17,13 +18,13 @@ namespace ProjectSAP.Pages
         public bool ValidPO { get; set; } = false;
         public List<ItemModel> ItemNamesA { get; set; } = new List<ItemModel>();
         public POmodel PurchaseOrder { get; set; }
-        public SOmodel SalesOrder { get; set; }
-        public DeliveryModel Delivery { get; set; }
-        public GRPOmodel GRPO { get; set; }
-        public InvoiceModel ARInvoice { get; set; }
-        public InvoiceModel APInvoice { get; set; }
+        //public SOmodel SalesOrder { get; set; }
+        //public DeliveryModel Delivery { get; set; }
+        //public GRPOmodel GRPO { get; set; }
+        //public InvoiceModel ARInvoice { get; set; }
+        //public InvoiceModel APInvoice { get; set; }
 
-        public Dictionary<string, int> Items { get; set; }
+        //public Dictionary<string, int> Items { get; set; }
 
         public CompanyA_SimulationModel(CompanyB_Service compB, CompanyA_Service companyA_Service)
         {
@@ -50,36 +51,7 @@ namespace ProjectSAP.Pages
                 int result = Convert.ToInt32(TempData.Peek("PO_Num"));
                 PurchaseOrder = companyA_Service.DiplayPO(result);
             }
-            if (TempData["SalesOrderNum"] != null)
-            {
-
-                int soNum = Convert.ToInt32(TempData.Peek("SalesOrderNum"));
-                SalesOrder = companyB_Service.DisplaySO(soNum);
-            }
-            if (TempData["DeliveryNum"] != null)
-            {
-                int dlNum = Convert.ToInt32(TempData.Peek("DeliveryNum"));
-                SalesOrder = null;
-                Delivery = companyB_Service.DisplayDelivery(dlNum);
-            }
-            if (TempData["GRPO_Num"] != null)
-            {
-                int grpoNum = Convert.ToInt32(TempData.Peek("GRPO_Num"));
-                PurchaseOrder = null;
-                GRPO = companyA_Service.DisplayGRPO(grpoNum);
-            }
-            if (TempData["ARInv_Num"] != null)
-            {
-                int arInvNum = Convert.ToInt32(TempData.Peek("ARInv_Num"));
-                Delivery = null;
-                ARInvoice = companyB_Service.DisplayARInv(arInvNum);
-            }
-            if (TempData["APInv_Num"] != null)
-            {
-                int apInvNum = Convert.ToInt32(TempData.Peek("APInv_Num"));
-                GRPO = null;
-                APInvoice = companyA_Service.DisplayAPInv(apInvNum);
-            }
+         
         }
 
         public async Task<IActionResult> OnPostCreatePO()
@@ -95,8 +67,8 @@ namespace ProjectSAP.Pages
             if (items == null || items.Count == 0)
                 return new JsonResult(new { success = false, message = "No items received." });
 
-            //var docNum = companyA_Service.PurchaseOrder(items); 
-            var docNum = 3;
+            var docNum = companyA_Service.PurchaseOrder(items); 
+            //var docNum = 3;
             if (docNum == -1)
             {
                 Console.WriteLine("Failed to create purchase order.");
@@ -123,16 +95,19 @@ namespace ProjectSAP.Pages
 
             int docNum = int.Parse(TempData["PO_Num"].ToString());
 
-            //var result = companyB_Service.SalesOrderBasedOnPO(docNum);
-            var result = 8;
+            var result = companyB_Service.SalesOrderBasedOnPO(docNum);
+            //var result = 8;
+
 
             TempData["SalesOrderNum"] = result;
             TempData.Keep();
 
+
             if (result == -1)
                 return new JsonResult(new { success = false, message = "Failed to create SO." });
 
-            return new JsonResult(new { success = true, salesOrderNum = result });
+            SOmodel so = companyB_Service.DisplaySO(result);
+            return new JsonResult(new { success = true, salesOrderNum = result, salesOrder = so });
         }
 
         public IActionResult OnPostCreateDl()
@@ -146,15 +121,19 @@ namespace ProjectSAP.Pages
 
             Console.WriteLine("SalesOrderNum = " + salesOrderNum);
 
-            //var result = companyB_Service.CreateDelivery(salesOrderNum);
-            var result = 1;
+            var result = companyB_Service.Delivery(salesOrderNum);
+            //var result = 1;
 
             TempData["DeliveryNum"] = result;
             TempData.Keep();
 
             if (result == -1)
                 return new JsonResult(new { success = false, message = "Failed to create Delivery." });
-            return new JsonResult(new { success = true, deliveryNum = result });
+
+            DeliveryModel dl = companyB_Service.DisplayDelivery(result);
+            Console.WriteLine("Delivery created successfully with DeliveryNum: " + result);
+
+            return new JsonResult(new { success = true, deliveryNum = result , delivery = dl });
 
 
         }
@@ -171,20 +150,21 @@ namespace ProjectSAP.Pages
 
             int poNum = int.Parse(TempData["PO_Num"].ToString());
             Console.WriteLine("PO_Num = " + poNum);
-            //var result = companyA_Service.GoodsReceiptPO(poNum);
-            var result = 3; // Simulating a successful GRPO creation for testing purposes
+            var result = companyA_Service.GoodsReceiptPO(poNum);
+            //var result = 3; // Simulating a successful GRPO creation for testing purposes
             if (result == -1)
             {
                 Console.WriteLine("Failed to create GRPO.");
                 return new JsonResult(new { success = false, message = "Failed to create GRPO." });
             }
 
+            GRPOmodel goodsReceipt = companyA_Service.DisplayGRPO(result);
             Console.WriteLine("GRPO created successfully with GRPO_Num: " + result);
 
             TempData["GRPO_Num"] = result;
             TempData.Keep();
 
-            return new JsonResult(new { success = true, message = "GRPO creation initiated." });
+            return new JsonResult(new { success = true, grpoNumber = result, grpo = goodsReceipt });
 
         }
 
@@ -196,11 +176,12 @@ namespace ProjectSAP.Pages
                 return new JsonResult(new { success = false, message = "Company B connection failed." });
             if (!TempData.ContainsKey("DeliveryNum"))
                 return new JsonResult(new { success = false, message = "No valid Delivery found." });
+
             int deliveryNum = int.Parse(TempData["DeliveryNum"].ToString());
             Console.WriteLine("DeliveryNum = " + deliveryNum);
 
-            //var result = companyB_Service.CreateARInvoice(deliveryNum);
-            var result = 1; // Simulating a successful AR Invoice creation for testing purposes
+            var result = companyB_Service.ARInvoice(deliveryNum);
+            //var result = 1; // Simulating a successful AR Invoice creation for testing purposes
             if (result == -1)
             {
                 Console.WriteLine("Failed to create AR Invoice.");
@@ -210,7 +191,9 @@ namespace ProjectSAP.Pages
 
             TempData["ARInv_Num"] = result;
             TempData.Keep();
-            return new JsonResult(new { success = true, arInvNum = result });
+
+            InvoiceModel arInv = companyB_Service.DisplayARInv(result);
+            return new JsonResult(new { success = true, arInvNum = result, arInvoice = arInv });
         }
 
         public IActionResult OnPostCreateAPInv()
@@ -222,8 +205,9 @@ namespace ProjectSAP.Pages
                 return new JsonResult(new { success = false, message = "No valid GRPO found." });
             int grpoNum = int.Parse(TempData["GRPO_Num"].ToString());
             Console.WriteLine("GRPO_Num = " + grpoNum);
-            //var result = companyA_Service.CreateAPInvoice(grpoNum);
-            var result = 1; // Simulating a successful AP Invoice creation for testing purposes
+
+            var result = companyA_Service.APInvoice(grpoNum);
+            //var result = 1; // Simulating a successful AP Invoice creation for testing purposes
             if (result == -1)
             {
                 Console.WriteLine("Failed to create AP Invoice.");
@@ -232,7 +216,9 @@ namespace ProjectSAP.Pages
             Console.WriteLine("AP Invoice created successfully with APInv_Num: " + result);
             TempData["APInv_Num"] = result;
             TempData.Keep();
-            return new JsonResult(new { success = true, apInvNum = result });
+
+            InvoiceModel apInv = companyA_Service.DisplayAPInv(result);
+            return new JsonResult(new { success = true, apInvNum = result, apInvoice=apInv });
         }
     }
 
