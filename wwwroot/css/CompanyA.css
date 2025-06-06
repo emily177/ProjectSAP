@@ -6,7 +6,7 @@
     margin: 0;
 }
 footer{
-    height: 90vh;
+    height: 30vh;
 }
 .full-bg {
     position: fixed;
@@ -222,4 +222,21 @@ footer{
     .nextStep:hover {
         background-color: rgba(254,220,100,255);
     }
+
+
+@keyframes slideInFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.slide-in {
+    animation: slideInFromRight 0.5s ease-out forwards;
+}
 

@@ -116,6 +116,8 @@ namespace ProjectSAP.Services
                     grpo.DocDueDate = goodsReceiptPO.DocDueDate.ToString("yyyy-MM-dd");
                     grpo.PaymentTerms = goodsReceiptPO.GroupNumber;
                     grpo.PaymentMethod = goodsReceiptPO.PaymentMethod;
+                    grpo.DocTotal = goodsReceiptPO.DocTotal.ToString();
+                    grpo.DocStatus = goodsReceiptPO.DocumentStatus.ToString();
                     for (int i = 0; i < goodsReceiptPO.Lines.Count; i++)
                     {
                         goodsReceiptPO.Lines.SetCurrentLine(i);
@@ -155,6 +157,8 @@ namespace ProjectSAP.Services
                     invoice.CardName = apInvoice.CardName;
                     invoice.DocDate = apInvoice.DocDate.ToString("yyyy-MM-dd");
                     invoice.DocDueDate = apInvoice.DocDueDate.ToString("yyyy-MM-dd");
+                    invoice.DocTotal = apInvoice.DocTotal.ToString();
+                    invoice.DocStatus = apInvoice.DocumentStatus.ToString();
                     for (int i = 0; i < apInvoice.Lines.Count; i++)
                     {
                         apInvoice.Lines.SetCurrentLine(i);
@@ -340,13 +344,13 @@ namespace ProjectSAP.Services
         }
 
         // Step 8
-        public bool APInvoice(int DocEntryGRPO)
+        public int APInvoice(int DocEntryGRPO)
         {
             Documents grpo = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseDeliveryNotes);
             if (grpo.GetByKey(DocEntryGRPO) == false)
             {
                 Console.WriteLine("Delivery not found with DocEntry: " + DocEntryGRPO);
-                return false;
+                return -1;
             }
 
             Documents apInvoice = (Documents)company1.GetBusinessObject(BoObjectTypes.oPurchaseInvoices);
@@ -372,13 +376,13 @@ namespace ProjectSAP.Services
                 int errorCode;
                 company1.GetLastError(out errorCode, out errorMessage);
                 Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
-                return false;
+                return -1;
             }
             else
             {
                 string docEntry = company1.GetNewObjectKey();
                 Console.WriteLine("AR Invoice created with DocEntry: " + docEntry);
-                return true;
+                return Convert.ToInt32(docEntry);
             }
         }
     }

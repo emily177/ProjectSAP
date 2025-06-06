@@ -13,12 +13,7 @@
 </head>
 <body>
 
-    <div class="page-header">
-        <h1 id="page-title">Step 1: Choose your Items</h1>
-        <p id="page-description"  class="header-description">
-            You are now Company A — a customer looking to purchase products from Company B. Below, you can see the available items from this vendor. To buy something through SAP Business One, you must first create a <strong>Purchase Order</strong>. Please select the items you want to buy, enter the desired quantity, and add them to the "cart" so they can be included in the Purchase Order.
-        </p>
-    </div>
+   
 
 
     <img src="~/css/Images/item3.jpg" alt="Background" class="full-bg">
@@ -28,6 +23,13 @@
         
         @if(Model.ValidPO == false)
         {
+            <div class="page-header">
+                <h1 id="page-title">Step 1: Choose your Items</h1>
+                <p id="page-description" class="header-description">
+                    You are now Company A — a customer looking to purchase products from Company B. Below, you can see the available items from this vendor. To buy something through SAP Business One, you must first create a <strong>Purchase Order</strong>. Please select the items you want to buy, enter the desired quantity, and add them to the "cart" so they can be included in the Purchase Order.
+                </p>
+            </div>
+
             <div class="boxes">
                 @foreach (var item in Model.ItemNamesA)
                 {
@@ -51,6 +53,16 @@
         else
         {
 
+        <div class="page-header">
+            <h1 id="page-title"> Step 2: Company B Receives Your Order</h1>
+                <p id="page-description" class="header-description">
+                    You just created a Purchase Order like Company A. This means you have sent your request to buy
+                    the products to the vendor, and now they can prepare them for you. Based on the Purchase Order requirements,
+                    SAP ERP can automatically create a <strong>Sales Order</strong> to fulfill the request, but we will do this manually.
+                    Tap the button below to create a Sales Order for Company B.
+                </p>
+
+        </div>
         
      
     <div class="big-frame">

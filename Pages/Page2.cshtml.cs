@@ -95,7 +95,7 @@ public class Page2Model : PageModel
         if (Connection == true)
         {
             Console.WriteLine("Connection to Company B in PostSales successful.");
-            VerifySO = companyB_Service.SalesOrder();
+            //VerifySO = companyB_Service.SalesOrder();
         }
         else
         {

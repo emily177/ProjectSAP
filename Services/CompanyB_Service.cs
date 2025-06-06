@@ -196,76 +196,76 @@ namespace ProjectSAP.Services
         }
 
         //Compania B (vanzatorul) creeaza un SalesOrder
-        public bool SalesOrder()
-        {
-            Documents salesOrder = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
-            salesOrder.CardCode = "100001";
+        //public bool SalesOrder()
+        //{
+        //    Documents salesOrder = (Documents)company2.GetBusinessObject(BoObjectTypes.oOrders);
+        //    salesOrder.CardCode = "100001";
 
-            SAPbobsCOM.Recordset oRecordSet2 = (SAPbobsCOM.Recordset)company2.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+        //    SAPbobsCOM.Recordset oRecordSet2 = (SAPbobsCOM.Recordset)company2.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
-            oRecordSet2.DoQuery(
-               "SELECT DISTINCT T0.DocEntry" +
-               " FROM ORDR T0" +
-               " JOIN RDR1 T1 ON T0.DocEntry = T1.DocEntry" +
-               "       WHERE T0.CardCode = '100001'" +
-               "       AND T1.ItemCode in ('102','103')" +
-               "       AND T0.Canceled = 'N'");
+        //    oRecordSet2.DoQuery(
+        //       "SELECT DISTINCT T0.DocEntry" +
+        //       " FROM ORDR T0" +
+        //       " JOIN RDR1 T1 ON T0.DocEntry = T1.DocEntry" +
+        //       "       WHERE T0.CardCode = '100001'" +
+        //       "       AND T1.ItemCode in ('102','103')" +
+        //       "       AND T0.Canceled = 'N'");
 
-            if (oRecordSet2.RecordCount > 0)
-            {
-                Console.WriteLine("Sales Order already exists for the given CardCode and ItemCode.");
-                return false;
-            }
+        //    if (oRecordSet2.RecordCount > 0)
+        //    {
+        //        Console.WriteLine("Sales Order already exists for the given CardCode and ItemCode.");
+        //        return false;
+        //    }
 
-            SAPbobsCOM.Recordset oRecordSet = (SAPbobsCOM.Recordset)company2.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-            oRecordSet.DoQuery("SELECT t0.ItemCode, t0.ItemName, t1.Price" +
-                " from OITM t0 " +
-                "join ITM1 t1 on t0.ItemCode=t1.ItemCode " +
-                "where t1.PriceList = 2 and t0.ItemCode in ('102','103')");
+        //    SAPbobsCOM.Recordset oRecordSet = (SAPbobsCOM.Recordset)company2.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+        //    oRecordSet.DoQuery("SELECT t0.ItemCode, t0.ItemName, t1.Price" +
+        //        " from OITM t0 " +
+        //        "join ITM1 t1 on t0.ItemCode=t1.ItemCode " +
+        //        "where t1.PriceList = 2 and t0.ItemCode in ('102','103')");
 
 
 
-            //Datele pentru Sales Order
-            if (oRecordSet.RecordCount == 0)
-            {
-                Console.WriteLine("No items found for the given query.");
-                return false;
-            }
+        //    //Datele pentru Sales Order
+        //    if (oRecordSet.RecordCount == 0)
+        //    {
+        //        Console.WriteLine("No items found for the given query.");
+        //        return false;
+        //    }
 
-            bool first_line = true;
-            while (!oRecordSet.EoF)
-            {
-                if (!first_line)
-                    salesOrder.Lines.Add();
+        //    bool first_line = true;
+        //    while (!oRecordSet.EoF)
+        //    {
+        //        if (!first_line)
+        //            salesOrder.Lines.Add();
 
-                salesOrder.Lines.ItemCode = oRecordSet.Fields.Item("ItemCode").Value.ToString();
-                salesOrder.Lines.Quantity = 3;
-                salesOrder.Lines.ItemDescription = oRecordSet.Fields.Item("ItemName").Value.ToString();
-                salesOrder.Lines.UnitPrice = oRecordSet.Fields.Item("Price").Value;
-                salesOrder.DocDueDate = DateTime.Now.AddDays(5);
+        //        salesOrder.Lines.ItemCode = oRecordSet.Fields.Item("ItemCode").Value.ToString();
+        //        salesOrder.Lines.Quantity = 3;
+        //        salesOrder.Lines.ItemDescription = oRecordSet.Fields.Item("ItemName").Value.ToString();
+        //        salesOrder.Lines.UnitPrice = oRecordSet.Fields.Item("Price").Value;
+        //        salesOrder.DocDueDate = DateTime.Now.AddDays(5);
 
-                first_line = false;
-                oRecordSet.MoveNext();
-            }
-            Console.WriteLine("Sales Order Lines added successfully.");
-            int RezultOfAdd = salesOrder.Add();
-            if (RezultOfAdd != 0)
-            {
-                string errorMessage;
-                int errorCode;
-                company2.GetLastError(out errorCode, out errorMessage);
-                Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
-                return false;
-            }
-            else
-            {
-                string docEntry;
-                docEntry = company2.GetNewObjectKey();
-                Console.WriteLine("Sales Order created with DocEntry: " + docEntry);
-                return true;
-            }
+        //        first_line = false;
+        //        oRecordSet.MoveNext();
+        //    }
+        //    Console.WriteLine("Sales Order Lines added successfully.");
+        //    int RezultOfAdd = salesOrder.Add();
+        //    if (RezultOfAdd != 0)
+        //    {
+        //        string errorMessage;
+        //        int errorCode;
+        //        company2.GetLastError(out errorCode, out errorMessage);
+        //        Console.WriteLine("Error: " + errorCode + " - " + errorMessage);
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        string docEntry;
+        //        docEntry = company2.GetNewObjectKey();
+        //        Console.WriteLine("Sales Order created with DocEntry: " + docEntry);
+        //        return true;
+        //    }
 
-        }
+        //}
 
         //Step 2
         public int SalesOrderBasedOnPO( int poDocEntry)

@@ -69,13 +69,6 @@ function submitOrder() {
 
 function CreateSO() {
 
-    // Changing the information of the next step
-    document.getElementById("page-title").textContent = "Step 2: Company B creates a Sales Order";
-    document.getElementById("page-description").innerHTML =
-        `You just make a Purchase Order like Company A. This means that `;
-
-   
-
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
     const message = document.getElementById('loading-message');
@@ -116,9 +109,16 @@ function CreateSO() {
                         overlay.style.display = 'none';
                         if (data.success) {
 
+                            // Changing the information of the next step
+                            document.getElementById("page-title").textContent = "Step 3: Let`s do this! ";
+                            document.getElementById("page-description").innerHTML =
+                                `  The vendor now has a document with your exact order. After everything has been confirmed to be correct,
+                                    the order can be shipped from the warehouse to the customer. Tap the "Create Delivery" button to
+                                    generate the document used to ship the items. `;
+
                             // Delete the button for SO
                             const oldButton = document.getElementById("button-so");
-                            oldButton.display = "none";
+                            oldButton.style.display = "none";
                             oldButton.disabled = true;
 
                             const panel = document.querySelector(".containerB");
@@ -139,7 +139,6 @@ function CreateSO() {
 
 function CreateDelivery() {
 
-    
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
     const message = document.getElementById('loading-message');
@@ -177,9 +176,18 @@ function CreateDelivery() {
                         overlay.style.display = 'none';
                         if (data.success) {
 
+                            // Change the message
+                            document.getElementById("page-title").textContent = "Step 4: Company A Receives the Delivery";
+                            document.getElementById("page-description").innerHTML =
+                                ` The delivery from Company B has now been sent. To complete the process, Company A needs to confirm
+                                    that the products have arrived by creating a <strong>Goods Receipt PO (GRPO)</strong>.
+                                    This document is used to officially record that the items were received in the warehouse.
+                                    It is based on the original Purchase Order and helps update inventory and track the transaction.
+                                    Tap the button below to create the GRPO for Company A.`;
+
                             //Hide the button for Delivery
                             const oldButton = document.getElementById("button-del");
-                            oldButton.display = "none";
+                            oldButton.style.display = "none";
                             oldButton.disabled = true;
 
                             const panel = document.querySelector(".containerB");
@@ -237,9 +245,18 @@ function CreateGRPO() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
+
+                            // Update information
+                            document.getElementById("page-title").textContent = "Step 5: Company B Issues the Invoice";
+                            document.getElementById("page-description").innerHTML =
+                                ` Now that Company A has confirmed the receipt of the goods, it’s time for Company B to issue the invoice.
+                                    The <strong>A/R Invoice</strong> (Accounts Receivable Invoice) is the document that requests payment for the delivered products.
+                                    It finalizes the process on the seller’s side and is based on the delivery and the goods received by Company A.
+                                    Tap the button below to create the A/R Invoice for Company B.`;
+
                             // Hide the button for GRPO
                             const oldButton = document.getElementById("button-grpo");
-                            oldButton.display = "none";
+                            oldButton.style.display = "none";
                             oldButton.disabled = true;
 
                             const panel = document.querySelector(".containerA");
@@ -299,9 +316,18 @@ function CreateARInvoice() {
                     setTimeout(() => {
                         overlay.style.display = 'none';
                         if (data.success) {
+
+                            document.getElementById("page-title").textContent = "Step 6: Company A Receives the Invoice";
+                            document.getElementById("page-description").innerHTML =
+                                ` After Company B has issued the sales invoice, Company A needs to record this in its system by creating an
+                                    <strong>A/P Invoice</strong> (Accounts Payable Invoice). This document represents the invoice received from the vendor and is used
+                                    to track the amount that needs to be paid.
+                                    It is linked to the original Purchase Order and the Goods Receipt previously created, so everything stays connected.
+                                    Tap the button below to create the A/P Invoice for Company A and complete the process.`;
+
                             // Hide the button for AR Invoice
                             const oldButton = document.getElementById("button-ar");
-                            oldButton.display = "none";
+                            oldButton.style.display = "none";
                             oldButton.disabled = true;
 
                             const panel = document.querySelector(".containerB");
@@ -322,7 +348,6 @@ function CreateARInvoice() {
 }
 
 function CreateAPInvoice() {
-
 
     // Showing overlay, animation + messages
     const overlay = document.getElementById('loading-overlay');
@@ -362,9 +387,15 @@ function CreateAPInvoice() {
                         overlay.style.display = 'none';
                         if (data.success) {
 
+                            //The last message
+                            document.getElementById("page-title").textContent = "Congratulations! The cycle is complete!";
+                            document.getElementById("page-description").innerHTML =
+                                `Thank you for learning about the Intercompany Process in SAP Business One with us! If you want to restart the simulation, you can return to the main page.`;
+
+
                             // Hide the button for AP Invoice
                             const oldButton = document.getElementById("button-ap");
-                            oldButton.display = "none";
+                            oldButton.style.display = "none";
                             oldButton.disabled = true;
 
                             const panel = document.querySelector(".containerA");
@@ -388,7 +419,7 @@ function CreateAPInvoice() {
 
 function buildSOPanel(salesOrder) {
     let html = `
-        <div class="panel">
+        <div class="panel slide-in">
             <h2>Sales Order</h2>
             <div>
                 <p><strong>Document Number:</strong> ${salesOrder.docNum}</p>
@@ -440,7 +471,7 @@ function buildSOPanel(salesOrder) {
 function buildDeliveryPanel(delivery) {
 
     let html = `
-        <div class="panel">
+        <div class="panel slide-in">
             <h2>Delivery</h2>
             <div>
                 <p><strong>Document Number:</strong> ${delivery.docNum}</p>
@@ -486,7 +517,7 @@ function buildDeliveryPanel(delivery) {
 function buildGRPOPanel(grpo) {
 
     let html = `
-        <div class="panel">
+        <div class="panel slide-in">
             <h2>Goods Receipt PO</h2>
             <div>
                 <p><strong>Document Number:</strong> ${grpo.docNum}</p>
@@ -538,7 +569,7 @@ function buildGRPOPanel(grpo) {
 function buildARInvPanel(arInvoice) {
 
     let html = `
-        <div class="panel">
+        <div class="panel slide-in">
             <h2>A/R Invoice</h2>
             <div>
                 <p><strong>Document Number:</strong> ${arInvoice.docNum}</p>
@@ -583,7 +614,7 @@ function buildARInvPanel(arInvoice) {
 
 function buildAPInvPanel(apInvoice) {
     let html = `
-        <div class="panel">
+        <div class="panel slide-in">
             <h2>A/P Invoice</h2>
             <div>
                 <p><strong>Document Number:</strong> ${apInvoice.docNum}</p>
