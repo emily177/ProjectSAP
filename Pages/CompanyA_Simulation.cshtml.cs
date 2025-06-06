@@ -18,13 +18,13 @@ namespace ProjectSAP.Pages
         public bool ValidPO { get; set; } = false;
         public List<ItemModel> ItemNamesA { get; set; } = new List<ItemModel>();
         public POmodel PurchaseOrder { get; set; }
-        public SOmodel SalesOrder { get; set; }
-        public DeliveryModel Delivery { get; set; }
-        public GRPOmodel GRPO { get; set; }
-        public InvoiceModel ARInvoice { get; set; }
-        public InvoiceModel APInvoice { get; set; }
+        //public SOmodel SalesOrder { get; set; }
+        //public DeliveryModel Delivery { get; set; }
+        //public GRPOmodel GRPO { get; set; }
+        //public InvoiceModel ARInvoice { get; set; }
+        //public InvoiceModel APInvoice { get; set; }
 
-        public Dictionary<string, int> Items { get; set; }
+        //public Dictionary<string, int> Items { get; set; }
 
         public CompanyA_SimulationModel(CompanyB_Service compB, CompanyA_Service companyA_Service)
         {
@@ -51,36 +51,7 @@ namespace ProjectSAP.Pages
                 int result = Convert.ToInt32(TempData.Peek("PO_Num"));
                 PurchaseOrder = companyA_Service.DiplayPO(result);
             }
-            //if (TempData["SalesOrderNum"] != null)
-            //{
-
-            //    int soNum = Convert.ToInt32(TempData.Peek("SalesOrderNum"));
-            //    SalesOrder = companyB_Service.DisplaySO(soNum);
-            //}
-            //if (TempData["DeliveryNum"] != null)
-            //{
-            //    int dlNum = Convert.ToInt32(TempData.Peek("DeliveryNum"));
-            //    SalesOrder = null;
-            //    Delivery = companyB_Service.DisplayDelivery(dlNum);
-            //}
-            //if (TempData["GRPO_Num"] != null)
-            //{
-            //    int grpoNum = Convert.ToInt32(TempData.Peek("GRPO_Num"));
-            //    PurchaseOrder = null;
-            //    GRPO = companyA_Service.DisplayGRPO(grpoNum);
-            //}
-            //if (TempData["ARInv_Num"] != null)
-            //{
-            //    int arInvNum = Convert.ToInt32(TempData.Peek("ARInv_Num"));
-            //    Delivery = null;
-            //    ARInvoice = companyB_Service.DisplayARInv(arInvNum);
-            //}
-            //if (TempData["APInv_Num"] != null)
-            //{
-            //    int apInvNum = Convert.ToInt32(TempData.Peek("APInv_Num"));
-            //    GRPO = null;
-            //    APInvoice = companyA_Service.DisplayAPInv(apInvNum);
-            //}
+         
         }
 
         public async Task<IActionResult> OnPostCreatePO()
