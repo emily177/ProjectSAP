@@ -205,18 +205,6 @@ namespace ProjectSAP.Services
                     ");
 
 
-                //SAPbobsCOM.Recordset oRecordSet1 = (SAPbobsCOM.Recordset)company1.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                //oRecordSet1.DoQuery($@"SELECT DISTINCT t1.DocEntry 
-                //    from POR1 t0 join OPOR t1 on t0.DocEntry=t1.DocEntry 
-                //    where t0.ItemCode in ({itemCodes}) 
-                //    and t1.Canceled = 'N'");
-
-                //if (oRecordSet1.RecordCount > 0)
-                //{
-                //    Console.WriteLine("There is already a Purchase Order for the specified items.");
-                //    return -1;
-                //}
-
                 bool first_line = true;
                 while (!oRecordSet.EoF)
                 {
