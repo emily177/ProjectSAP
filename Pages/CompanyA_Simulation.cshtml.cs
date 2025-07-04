@@ -18,13 +18,13 @@ namespace ProjectSAP.Pages
         public bool ValidPO { get; set; } = false;
         public List<ItemModel> ItemNamesA { get; set; } = new List<ItemModel>();
         public POmodel PurchaseOrder { get; set; }
-        //public SOmodel SalesOrder { get; set; }
-        //public DeliveryModel Delivery { get; set; }
-        //public GRPOmodel GRPO { get; set; }
-        //public InvoiceModel ARInvoice { get; set; }
-        //public InvoiceModel APInvoice { get; set; }
+        public SOmodel SalesOrder { get; set; }
+        public DeliveryModel Delivery { get; set; }
+        public GRPOmodel GRPO { get; set; }
+        public InvoiceModel ARInvoice { get; set; }
+        public InvoiceModel APInvoice { get; set; }
 
-        //public Dictionary<string, int> Items { get; set; }
+        public Dictionary<string, int> Items { get; set; }
 
         public CompanyA_SimulationModel(CompanyB_Service compB, CompanyA_Service companyA_Service)
         {
