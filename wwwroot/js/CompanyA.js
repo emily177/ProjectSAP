@@ -554,7 +554,7 @@ function buildGRPOPanel(grpo) {
                 </tbody>
                 </table>
                 <div>
-                    <p><strong>Total Amount:</strong> @Model.GRPO.DocTotal</p>
+                    <p><strong>Total Amount:</strong> ${grpo.docTotal}</p>
                 </div>
             </div>
             <div class="next-step-container">
@@ -575,7 +575,7 @@ function buildARInvPanel(arInvoice) {
                 <p><strong>Document Number:</strong> ${arInvoice.docNum}</p>
                 <p><strong>Customer Code:</strong> ${arInvoice.cardCode}</p>
                 <p><strong>Customer Name:</strong> ${arInvoice.cardName}</p>
-                <p><strong>Status:</strong> ${arInvoice.docStatus}</p>
+                
                 <p><strong>Document Date:</strong> ${arInvoice.docDate}</p>
                 <p><strong>Due Date:</strong> ${arInvoice.docDueDate}</p>
             </div>
@@ -620,7 +620,7 @@ function buildAPInvPanel(apInvoice) {
                 <p><strong>Document Number:</strong> ${apInvoice.docNum}</p>
                 <p><strong>Vendor Code:</strong> ${apInvoice.cardCode}</p>
                 <p><strong>Vendor Name:</strong> ${apInvoice.cardName}</p>
-                <p><strong>Status:</strong> ${apInvoice.docStatus}</p>
+               
                 <p><strong>Document Date:</strong> ${apInvoice.docDate}</p>
                 <p><strong>Due Date:</strong> ${apInvoice.docDueDate}</p>
             </div>

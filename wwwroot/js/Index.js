@@ -7,11 +7,7 @@
     desc.classList.add("tooltip-box");
 
     const button = document.getElementById(buttonId);
-    //const rect = button.getBoundingClientRect();
-    //const descRect = desc.getBoundingClientRect();
-
-    // Calculăm poziția relativă a centrului butonului față de caseta de descriere
-    /*const arrowLeft = rect.left + rect.width / 2 - descRect.left ;*/
+   
     if (button.id === "companyA") {
         arrow.style.left = `55px`;
     }

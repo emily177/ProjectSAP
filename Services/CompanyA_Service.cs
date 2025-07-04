@@ -242,45 +242,7 @@ namespace ProjectSAP.Services
                 return -1;
             }
         }
-        ////Step 3
-        //public int UpdatePurchaseOrder(int docEntry, List<int> updatedItems)
-        //{
-        //    try
-        //    {
-        //        SAPbobsCOM.Documents po = (SAPbobsCOM.Documents)company1.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oPurchaseOrders);
-
-        //        if (!po.GetByKey(docEntry))
-        //        {
-        //            Console.WriteLine("Purchase Order with DocEntry " + docEntry + " not found.");
-        //            return -1;
-        //        }
-
-        //        // Delete existing lines
-        //        po.Lines.SetCurrentLine(0);
-        //        int existingLines = po.Lines.Count;
-        //        for (int i = existingLines - 1; i >= 0; i--)
-        //        {
-        //            po.Lines.SetCurrentLine(i);
-        //            po.Lines.Quantity = updatedItems[i];
-                     
-        //        }
-        //        int result = po.Update();
-        //        if (result != 0)
-        //        {
-        //            string errorMsg = company1.GetLastErrorDescription();
-        //            Console.WriteLine("Error updating PO: " + errorMsg);
-        //            return -1;
-        //        }
-
-        //        Console.WriteLine("Purchase Order updated successfully.");
-        //        return docEntry;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("Exception in UpdatePurchaseOrder: " + ex.Message);
-        //        return -1;
-        //    }
-        //}
+      
 
 
         //Step 5
