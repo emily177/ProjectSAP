@@ -1,4 +1,4 @@
-# Intercompany Flow Simulation for SAP Business One
+# ProjectSAP - Intercompany Flow Simulation for SAP Business One
 
 ## 🧭 Purpose and Motivation
 
