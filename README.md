@@ -35,6 +35,9 @@ While the ideal objective was to implement a full SAP add-on that automates the 
 
 ---
 
+## 🎥 Demo
+https://youtu.be/O1CJAej575w
+
 ## ⚠️ Disclaimer
 
 This project is meant for **educational and demonstrative purposes**. It is not intended to replace official SAP functionalities or be used in a production environment without proper review and extension.
